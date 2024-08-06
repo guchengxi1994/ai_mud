@@ -1,0 +1,13 @@
+{
+    "games":[
+        {
+            "type":"历史",
+            "options": []
+        },
+        {
+            "type":"奇幻",
+            "options": []
+        }
+    ],
+    "system-role": ""
+}

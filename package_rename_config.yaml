@@ -1,0 +1,29 @@
+# dart run package_rename
+package_rename_config:
+  android:
+    app_name: AiMud
+    package_name: cn.xiaoshuyui.AiMud
+
+  ios:
+    app_name: AiMud
+    bundle_name: AiMud
+    package_name: cn.xiaoshuyui.AiMud
+
+  web:
+    app_name: AiMud
+    short_app_name: AiMud
+    description: FOR FUN.
+
+  linux:
+    app_name: AiMud
+    package_name: cn.xiaoshuyui.AiMud
+    exe_name: makeadream-linux-x64
+
+  windows:
+    app_name: AiMud
+    organization: Xiaoshuyui
+    exe_name: AiMud
+
+  macos:
+    app_name: AiMud
+    package_name: cn.xiaoshuyui.AiMud
