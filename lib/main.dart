@@ -44,5 +44,6 @@ void main() async {
 
   AiClient aiClient = AiClient();
   aiClient.initOpenAi(DevUtils.env);
+  aiClient.initSystemConfig(DevUtils.settings);
   runApp(const ProviderScope(child: MyApp()));
 }
