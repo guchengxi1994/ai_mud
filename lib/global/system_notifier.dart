@@ -14,10 +14,11 @@ class SystemNotifier extends Notifier<SystemState?> {
     return null;
   }
 
-  Stream<ChatResult> generateWorld(String type) {
+  Stream<ChatResult> generateWorld(String type, {String details = ""}) {
     return client.stream([
       ChatMessage.system("你是一款文字游戏(MUD游戏)"),
       ChatMessage.humanText("请帮我按照$type，设计游戏的世界观"),
+      if (details.isNotEmpty) ChatMessage.humanText("具体要求如下: $details"),
       ChatMessage.humanText("仅需要给出答案，不需要过程")
     ]);
   }

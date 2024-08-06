@@ -52,6 +52,7 @@ set(VCRUNTIME2 ${ROOT_DIR}/dlls/vcruntime140_1.dll)
 
 # create .env if .env not exists
 set(ENV_PATH ${ROOT_DIR}/env.json)
+set(SETTING_PATH ${ROOT_DIR}/settings.json)
 
 if(NOT EXISTS ${ENV_PATH})
     set(MULTILINE_TEXT
@@ -79,6 +80,10 @@ add_custom_target(copy-runtime-files ALL
   COMMAND ${CMAKE_COMMAND} -E copy ${ENV_PATH} ${P1}/runner/Debug/env.json
   COMMAND ${CMAKE_COMMAND} -E copy ${ENV_PATH} ${P1}/runner/Release/env.json
   COMMAND ${CMAKE_COMMAND} -E copy ${ENV_PATH} ${P1}/runner/Profile/env.json
+
+  COMMAND ${CMAKE_COMMAND} -E copy ${SETTING_PATH} ${P1}/runner/Debug/settings.json
+  COMMAND ${CMAKE_COMMAND} -E copy ${SETTING_PATH} ${P1}/runner/Release/settings.json
+  COMMAND ${CMAKE_COMMAND} -E copy ${SETTING_PATH} ${P1}/runner/Profile/settings.json
 
   COMMAND ${CMAKE_COMMAND} -E copy ${MSVCP_PATH} ${P1}/runner/Release/msvcp140.dll
   COMMAND ${CMAKE_COMMAND} -E copy ${VCRUNTIME} ${P1}/runner/Release/vcruntime140.dll

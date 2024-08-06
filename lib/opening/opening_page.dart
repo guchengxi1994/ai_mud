@@ -19,6 +19,9 @@ class OpeningPage extends ConsumerWidget {
         },
         child: Stack(
           children: [
+            // WorldSettingWidget(
+            //   type: "历史角色扮演",
+            // )
             Container(
               decoration: const BoxDecoration(
                   image: DecorationImage(
