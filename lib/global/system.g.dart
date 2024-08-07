@@ -25,9 +25,11 @@ Game _$GameFromJson(Map<String, dynamic> json) => Game(
       type: json['type'] as String,
       options:
           (json['options'] as List<dynamic>).map((e) => e as String).toList(),
+      roles: (json['roles'] as List<dynamic>).map((e) => e as String).toList(),
     );
 
 Map<String, dynamic> _$GameToJson(Game instance) => <String, dynamic>{
       'type': instance.type,
       'options': instance.options,
+      'roles': instance.roles,
     };

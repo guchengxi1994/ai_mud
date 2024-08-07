@@ -27,8 +27,9 @@ class SystemConfig {
 class Game {
   final String type;
   final List<String> options;
+  final List<String> roles;
 
-  Game({required this.type, required this.options});
+  Game({required this.type, required this.options, required this.roles});
 
   factory Game.fromJson(Map<String, dynamic> json) => _$GameFromJson(json);
 

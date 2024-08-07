@@ -7,8 +7,9 @@ import 'package:langchain_lib/langchain_lib.dart';
 import 'package:markdown_widget/markdown_widget.dart';
 
 class WorldSettingWidget extends ConsumerStatefulWidget {
-  const WorldSettingWidget({super.key, required this.type});
+  const WorldSettingWidget({super.key, required this.type, this.details = ""});
   final String type;
+  final String details;
 
   @override
   ConsumerState<WorldSettingWidget> createState() => _WorldSettingWidgetState();
@@ -19,27 +20,30 @@ class _WorldSettingWidgetState extends ConsumerState<WorldSettingWidget> {
   final StreamController<ChatResult> _streamController =
       StreamController<ChatResult>();
 
+  final ScrollController controller = ScrollController();
+
   @override
   void dispose() {
     _streamController.close();
+    controller.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-    _streamController.addStream(
-        ref.read(systemProvider.notifier).generateWorld(widget.type));
-    // stream = ref.read(systemProvider.notifier).generateWorld(widget.type);
-
-    _streamController.stream.listen(
-      (v) {},
-      onDone: () {
-        setState(() {
-          finished = true;
-        });
-      },
-    );
+    _streamController.addStream(ref.read(systemProvider.notifier).generateWorld(
+          widget.type,
+          () {
+            setState(() {
+              finished = true;
+            });
+          },
+          details: widget.details,
+          onData: (p0) {
+            controller.jumpTo(controller.position.maxScrollExtent);
+          },
+        ));
   }
 
   String content = "";
@@ -47,27 +51,34 @@ class _WorldSettingWidgetState extends ConsumerState<WorldSettingWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(10),
+    return Material(
+      elevation: 10,
       child: Container(
+        margin: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10), color: Colors.white),
+            border: Border.all(width: 1, color: Colors.grey[300]!),
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.white),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-                child: StreamBuilder(
-                    stream: _streamController.stream,
-                    builder: (c, s) {
-                      if (s.hasData) {
-                        content += s.data!.output.content;
-                      }
-                      return MarkdownBlock(
-                        data: content,
-                        selectable: false,
-                        config: MarkdownConfig.defaultConfig,
-                      );
-                    })),
+                child: SingleChildScrollView(
+              controller: controller,
+              child: StreamBuilder(
+                  stream: _streamController.stream,
+                  builder: (c, s) {
+                    if (s.hasData) {
+                      content += s.data!.output.content;
+                    }
+                    return MarkdownBlock(
+                      data: content,
+                      selectable: false,
+                      config: MarkdownConfig.defaultConfig,
+                    );
+                  }),
+            )),
             SizedBox(
               height: 30,
               child: Row(
@@ -80,9 +91,20 @@ class _WorldSettingWidgetState extends ConsumerState<WorldSettingWidget> {
                             content = "";
                             finished = false;
                           });
-                          _streamController.addStream(ref
-                              .read(systemProvider.notifier)
-                              .generateWorld(widget.type));
+                          _streamController.addStream(
+                              ref.read(systemProvider.notifier).generateWorld(
+                                    widget.type,
+                                    () {
+                                      setState(() {
+                                        finished = true;
+                                      });
+                                    },
+                                    details: widget.details,
+                                    onData: (p0) {
+                                      controller.jumpTo(
+                                          controller.position.maxScrollExtent);
+                                    },
+                                  ));
                         },
                         child: const Icon(
                           Icons.refresh,

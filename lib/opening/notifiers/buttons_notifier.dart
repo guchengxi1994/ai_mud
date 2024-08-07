@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:ai_mud/opening/components/new_game_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -40,7 +41,15 @@ class ButtonsNotifier extends AutoDisposeNotifier<ButtonState> {
     ButtonModel(
       debugLabel: 1,
       content: "起",
-      onTap: (context, ref) async {},
+      onTap: (context, ref) async {
+        showGeneralDialog(
+            context: context,
+            pageBuilder: (c, _, __) {
+              return const Center(
+                child: NewGameDialog(),
+              );
+            });
+      },
     ),
     ButtonModel(
       content: "承",
