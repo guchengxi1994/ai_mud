@@ -43,6 +43,7 @@ class NewGameDialog extends ConsumerWidget {
                                 .read(systemProvider.notifier)
                                 .newGame(ref.watch(newGameProvider))
                                 .then((_) {
+                              // ignore: use_build_context_synchronously
                               Navigator.of(context).pop();
                             });
                           }

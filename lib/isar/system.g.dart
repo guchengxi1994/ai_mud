@@ -17,34 +17,39 @@ const SystemSchema = CollectionSchema(
   name: r'System',
   id: -874263454349082839,
   properties: {
-    r'details': PropertySchema(
+    r'createAt': PropertySchema(
       id: 0,
+      name: r'createAt',
+      type: IsarType.long,
+    ),
+    r'details': PropertySchema(
+      id: 1,
       name: r'details',
       type: IsarType.stringList,
     ),
     r'history': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'history',
       type: IsarType.objectList,
       target: r'History',
     ),
     r'historySummary': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'historySummary',
       type: IsarType.string,
     ),
     r'prompt': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'prompt',
       type: IsarType.string,
     ),
     r'type': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'type',
       type: IsarType.string,
     ),
     r'worldSetting': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'worldSetting',
       type: IsarType.string,
     )
@@ -67,7 +72,7 @@ const SystemSchema = CollectionSchema(
   getId: _systemGetId,
   getLinks: _systemGetLinks,
   attach: _systemAttach,
-  version: '3.1.0+1',
+  version: '3.1.7',
 );
 
 int _systemEstimateSize(
@@ -104,17 +109,18 @@ void _systemSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeStringList(offsets[0], object.details);
+  writer.writeLong(offsets[0], object.createAt);
+  writer.writeStringList(offsets[1], object.details);
   writer.writeObjectList<History>(
-    offsets[1],
+    offsets[2],
     allOffsets,
     HistorySchema.serialize,
     object.history,
   );
-  writer.writeString(offsets[2], object.historySummary);
-  writer.writeString(offsets[3], object.prompt);
-  writer.writeString(offsets[4], object.type);
-  writer.writeString(offsets[5], object.worldSetting);
+  writer.writeString(offsets[3], object.historySummary);
+  writer.writeString(offsets[4], object.prompt);
+  writer.writeString(offsets[5], object.type);
+  writer.writeString(offsets[6], object.worldSetting);
 }
 
 System _systemDeserialize(
@@ -124,18 +130,19 @@ System _systemDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = System();
-  object.details = reader.readStringList(offsets[0]) ?? [];
+  object.createAt = reader.readLong(offsets[0]);
+  object.details = reader.readStringList(offsets[1]) ?? [];
   object.history = reader.readObjectList<History>(
-        offsets[1],
+        offsets[2],
         HistorySchema.deserialize,
         allOffsets,
         History(),
       ) ??
       [];
-  object.historySummary = reader.readString(offsets[2]);
+  object.historySummary = reader.readString(offsets[3]);
   object.id = id;
-  object.type = reader.readString(offsets[4]);
-  object.worldSetting = reader.readString(offsets[5]);
+  object.type = reader.readString(offsets[5]);
+  object.worldSetting = reader.readString(offsets[6]);
   return object;
 }
 
@@ -147,8 +154,10 @@ P _systemDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readStringList(offset) ?? []) as P;
+      return (reader.readLong(offset)) as P;
     case 1:
+      return (reader.readStringList(offset) ?? []) as P;
+    case 2:
       return (reader.readObjectList<History>(
             offset,
             HistorySchema.deserialize,
@@ -156,13 +165,13 @@ P _systemDeserializeProp<P>(
             History(),
           ) ??
           []) as P;
-    case 2:
-      return (reader.readString(offset)) as P;
     case 3:
       return (reader.readString(offset)) as P;
     case 4:
       return (reader.readString(offset)) as P;
     case 5:
+      return (reader.readString(offset)) as P;
+    case 6:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -258,6 +267,59 @@ extension SystemQueryWhere on QueryBuilder<System, System, QWhereClause> {
 }
 
 extension SystemQueryFilter on QueryBuilder<System, System, QFilterCondition> {
+  QueryBuilder<System, System, QAfterFilterCondition> createAtEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'createAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<System, System, QAfterFilterCondition> createAtGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'createAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<System, System, QAfterFilterCondition> createAtLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'createAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<System, System, QAfterFilterCondition> createAtBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'createAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<System, System, QAfterFilterCondition> detailsElementEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -1155,6 +1217,18 @@ extension SystemQueryLinks on QueryBuilder<System, System, QFilterCondition> {
 }
 
 extension SystemQuerySortBy on QueryBuilder<System, System, QSortBy> {
+  QueryBuilder<System, System, QAfterSortBy> sortByCreateAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<System, System, QAfterSortBy> sortByCreateAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createAt', Sort.desc);
+    });
+  }
+
   QueryBuilder<System, System, QAfterSortBy> sortByHistorySummary() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'historySummary', Sort.asc);
@@ -1205,6 +1279,18 @@ extension SystemQuerySortBy on QueryBuilder<System, System, QSortBy> {
 }
 
 extension SystemQuerySortThenBy on QueryBuilder<System, System, QSortThenBy> {
+  QueryBuilder<System, System, QAfterSortBy> thenByCreateAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<System, System, QAfterSortBy> thenByCreateAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createAt', Sort.desc);
+    });
+  }
+
   QueryBuilder<System, System, QAfterSortBy> thenByHistorySummary() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'historySummary', Sort.asc);
@@ -1267,6 +1353,12 @@ extension SystemQuerySortThenBy on QueryBuilder<System, System, QSortThenBy> {
 }
 
 extension SystemQueryWhereDistinct on QueryBuilder<System, System, QDistinct> {
+  QueryBuilder<System, System, QDistinct> distinctByCreateAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'createAt');
+    });
+  }
+
   QueryBuilder<System, System, QDistinct> distinctByDetails() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'details');
@@ -1307,6 +1399,12 @@ extension SystemQueryProperty on QueryBuilder<System, System, QQueryProperty> {
   QueryBuilder<System, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<System, int, QQueryOperations> createAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'createAt');
     });
   }
 

@@ -81,6 +81,18 @@ class SystemNotifier extends Notifier<SystemState?> {
     return null;
   }
 
+  Future loadLast() async {
+    final last =
+        await database.isar!.systems.where().sortByCreateAtDesc().findFirst();
+    if (last != null) {
+      state = SystemState(
+        type: last.type,
+        worldSetting: last.worldSetting,
+        systemId: last.id,
+      );
+    }
+  }
+
   Future newGame(NewGameState newGameConfig) async {
     /// TODO 这里要根据身份初始化属性
     /// 这里最好是用大模型生成，但是现在用随机
@@ -103,6 +115,12 @@ class SystemNotifier extends Notifier<SystemState?> {
       system.player.value = player;
       await system.player.save();
     });
+
+    state = SystemState(
+      type: newGameConfig.worldType,
+      worldSetting: newGameConfig.worldSetting,
+      systemId: system.id,
+    );
   }
 
   Future<YearMonthPeriod?> getCurrentAge() async {

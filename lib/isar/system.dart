@@ -7,6 +7,7 @@ part 'system.g.dart';
 @collection
 class System {
   Id id = Isar.autoIncrement;
+  int createAt = DateTime.now().millisecondsSinceEpoch;
 
   late String type;
 
