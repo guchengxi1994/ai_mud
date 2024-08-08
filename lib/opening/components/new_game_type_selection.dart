@@ -1,5 +1,4 @@
-import 'package:ai_mud/global/ai_client.dart';
-import 'package:ai_mud/global/system.dart';
+import 'package:ai_mud/global/global.dart';
 import 'package:ai_mud/opening/components/active_button.dart';
 import 'package:ai_mud/opening/components/world_setting.dart';
 import 'package:ai_mud/opening/notifiers/new_game_notifier.dart';
@@ -129,13 +128,14 @@ class _NewGameTypeSelectionState extends ConsumerState<NewGameTypeSelection> {
                                     return ActiveButton(
                                         inactiveColor: Colors.grey[300],
                                         onTap: (s) {
+                                          final game = config.games
+                                              .where((v) =>
+                                                  v.type == state.worldType)
+                                              .first;
                                           ref
                                               .read(newGameProvider.notifier)
-                                              .changeWorldOption(config.games
-                                                  .where((v) =>
-                                                      v.type == state.worldType)
-                                                  .first
-                                                  .options[i]);
+                                              .changeWorldOption(
+                                                  game.options[i], game.roles);
 
                                           showGeneralDialog(
                                               barrierLabel: "world-setting",
@@ -154,7 +154,19 @@ class _NewGameTypeSelectionState extends ConsumerState<NewGameTypeSelection> {
                                                   ),
                                                 );
                                               }).then((v) {
-                                            print(v);
+                                            // print(v);
+                                            if (v != null) {
+                                              ref
+                                                  .read(
+                                                      newGameProvider.notifier)
+                                                  .changeWorldSetting(
+                                                      v.toString());
+
+                                              ref
+                                                  .read(
+                                                      newGameProvider.notifier)
+                                                  .jumpTo(1);
+                                            }
                                           });
                                         },
                                         debugLabel: i,

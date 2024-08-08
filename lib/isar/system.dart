@@ -1,5 +1,7 @@
 import 'package:isar/isar.dart';
 
+import 'player.dart';
+
 part 'system.g.dart';
 
 @collection
@@ -10,9 +12,11 @@ class System {
 
   /// 世界观
   late String worldSetting;
-  late List<String> details;
+  late List<String> details = [];
 
   late List<History> history = [];
+
+  IsarLink<Player> player = IsarLink<Player>();
 
   /// 减少prompt token使用量
   late String historySummary = "";

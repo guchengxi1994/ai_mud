@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AllAlongDemo extends StatefulWidget {
-  const AllAlongDemo({Key? key}) : super(key: key);
+  const AllAlongDemo({super.key});
 
   @override
   State<AllAlongDemo> createState() => _AllAlongDemoState();

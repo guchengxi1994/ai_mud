@@ -29,13 +29,18 @@ const PlayerSchema = CollectionSchema(
       type: IsarType.objectList,
       target: r'Achievement',
     ),
-    r'name': PropertySchema(
+    r'maxAge': PropertySchema(
       id: 2,
+      name: r'maxAge',
+      type: IsarType.long,
+    ),
+    r'name': PropertySchema(
+      id: 3,
       name: r'name',
       type: IsarType.string,
     ),
     r'role': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'role',
       type: IsarType.string,
     )
@@ -97,8 +102,9 @@ void _playerSerialize(
     AchievementSchema.serialize,
     object.achievements,
   );
-  writer.writeString(offsets[2], object.name);
-  writer.writeString(offsets[3], object.role);
+  writer.writeLong(offsets[2], object.maxAge);
+  writer.writeString(offsets[3], object.name);
+  writer.writeString(offsets[4], object.role);
 }
 
 Player _playerDeserialize(
@@ -122,8 +128,9 @@ Player _playerDeserialize(
       ) ??
       [];
   object.id = id;
-  object.name = reader.readString(offsets[2]);
-  object.role = reader.readString(offsets[3]);
+  object.maxAge = reader.readLong(offsets[2]);
+  object.name = reader.readString(offsets[3]);
+  object.role = reader.readString(offsets[4]);
   return object;
 }
 
@@ -150,8 +157,10 @@ P _playerDeserializeProp<P>(
           ) ??
           []) as P;
     case 2:
-      return (reader.readString(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 3:
+      return (reader.readString(offset)) as P;
+    case 4:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -376,6 +385,58 @@ extension PlayerQueryFilter on QueryBuilder<Player, Player, QFilterCondition> {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
         property: r'id',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterFilterCondition> maxAgeEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'maxAge',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterFilterCondition> maxAgeGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'maxAge',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterFilterCondition> maxAgeLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'maxAge',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterFilterCondition> maxAgeBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'maxAge',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -662,6 +723,18 @@ extension PlayerQueryObject on QueryBuilder<Player, Player, QFilterCondition> {
 extension PlayerQueryLinks on QueryBuilder<Player, Player, QFilterCondition> {}
 
 extension PlayerQuerySortBy on QueryBuilder<Player, Player, QSortBy> {
+  QueryBuilder<Player, Player, QAfterSortBy> sortByMaxAge() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'maxAge', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterSortBy> sortByMaxAgeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'maxAge', Sort.desc);
+    });
+  }
+
   QueryBuilder<Player, Player, QAfterSortBy> sortByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
@@ -700,6 +773,18 @@ extension PlayerQuerySortThenBy on QueryBuilder<Player, Player, QSortThenBy> {
     });
   }
 
+  QueryBuilder<Player, Player, QAfterSortBy> thenByMaxAge() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'maxAge', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterSortBy> thenByMaxAgeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'maxAge', Sort.desc);
+    });
+  }
+
   QueryBuilder<Player, Player, QAfterSortBy> thenByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
@@ -726,6 +811,12 @@ extension PlayerQuerySortThenBy on QueryBuilder<Player, Player, QSortThenBy> {
 }
 
 extension PlayerQueryWhereDistinct on QueryBuilder<Player, Player, QDistinct> {
+  QueryBuilder<Player, Player, QDistinct> distinctByMaxAge() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'maxAge');
+    });
+  }
+
   QueryBuilder<Player, Player, QDistinct> distinctByName(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -758,6 +849,12 @@ extension PlayerQueryProperty on QueryBuilder<Player, Player, QQueryProperty> {
       achievementsProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'achievements');
+    });
+  }
+
+  QueryBuilder<Player, int, QQueryOperations> maxAgeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'maxAge');
     });
   }
 

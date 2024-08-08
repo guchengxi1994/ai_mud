@@ -55,7 +55,14 @@ const SystemSchema = CollectionSchema(
   deserializeProp: _systemDeserializeProp,
   idName: r'id',
   indexes: {},
-  links: {},
+  links: {
+    r'player': LinkSchema(
+      id: -4994242563781134023,
+      name: r'player',
+      target: r'Player',
+      single: true,
+    )
+  },
   embeddedSchemas: {r'History': HistorySchema},
   getId: _systemGetId,
   getLinks: _systemGetLinks,
@@ -167,11 +174,12 @@ Id _systemGetId(System object) {
 }
 
 List<IsarLinkBase<dynamic>> _systemGetLinks(System object) {
-  return [];
+  return [object.player];
 }
 
 void _systemAttach(IsarCollection<dynamic> col, Id id, System object) {
   object.id = id;
+  object.player.attach(col, col.isar.collection<Player>(), r'player', id);
 }
 
 extension SystemQueryWhereSort on QueryBuilder<System, System, QWhere> {
@@ -1131,7 +1139,20 @@ extension SystemQueryObject on QueryBuilder<System, System, QFilterCondition> {
   }
 }
 
-extension SystemQueryLinks on QueryBuilder<System, System, QFilterCondition> {}
+extension SystemQueryLinks on QueryBuilder<System, System, QFilterCondition> {
+  QueryBuilder<System, System, QAfterFilterCondition> player(
+      FilterQuery<Player> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'player');
+    });
+  }
+
+  QueryBuilder<System, System, QAfterFilterCondition> playerIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'player', 0, true, 0, true);
+    });
+  }
+}
 
 extension SystemQuerySortBy on QueryBuilder<System, System, QSortBy> {
   QueryBuilder<System, System, QAfterSortBy> sortByHistorySummary() {

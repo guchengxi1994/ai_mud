@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:isar/isar.dart';
 
 part 'player.g.dart';
@@ -7,6 +9,7 @@ class Player {
   Id id = Isar.autoIncrement;
   late String name;
   late String role;
+  late int maxAge;
 
   late PlayerAbility ability = PlayerAbility();
 
@@ -21,6 +24,18 @@ class PlayerAbility {
   late double /* 力量 */ strength = 1;
   late double /* 敏捷 */ dexterity = 1;
   late double /* 智力 */ intelligence = 1;
+
+  static Random random = Random();
+
+  static PlayerAbility getRandom() {
+    return PlayerAbility()
+      ..endurance = random.nextInt(10).toDouble() + 1
+      ..vitality = random.nextInt(10).toDouble() + 1
+      ..attunement = random.nextInt(10).toDouble() + 1
+      ..strength = random.nextInt(10).toDouble() + 1
+      ..dexterity = random.nextInt(10).toDouble() + 1
+      ..intelligence = random.nextInt(10).toDouble() + 1;
+  }
 
   PlayerAbility operator +(Object other) {
     if (other is! PlayerAbility) {

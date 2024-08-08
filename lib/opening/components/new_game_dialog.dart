@@ -1,7 +1,11 @@
+import 'package:ai_mud/global/system_notifier.dart';
 import 'package:ai_mud/opening/components/new_game_type_selection.dart';
 import 'package:ai_mud/opening/notifiers/new_game_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'new_game_last_screen.dart';
+import 'new_game_role_selection.dart';
 
 class NewGameDialog extends ConsumerWidget {
   const NewGameDialog({super.key});
@@ -15,7 +19,12 @@ class NewGameDialog extends ConsumerWidget {
         children: [
           Expanded(
               child: PageView(
-            children: const [NewGameTypeSelection()],
+            controller: ref.read(newGameProvider.notifier).pageController,
+            children: const [
+              NewGameTypeSelection(),
+              NewGameRoleSelection(),
+              NewGameLastScreen()
+            ],
           )),
           SizedBox(
             height: 50,
@@ -25,7 +34,17 @@ class NewGameDialog extends ConsumerWidget {
                 ElevatedButton(
                     onPressed: ref.watch(newGameProvider.notifier).valid
                         ? () {
-                            Navigator.of(context).pop();
+                            ref.read(newGameProvider.notifier).changePlayerName(
+                                ref
+                                    .read(newGameProvider.notifier)
+                                    .controller
+                                    .text);
+                            ref
+                                .read(systemProvider.notifier)
+                                .newGame(ref.watch(newGameProvider))
+                                .then((_) {
+                              Navigator.of(context).pop();
+                            });
                           }
                         : null,
                     child: const Text("确定")),
