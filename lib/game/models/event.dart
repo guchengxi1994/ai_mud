@@ -4,8 +4,11 @@ part 'event.g.dart';
 
 @JsonSerializable()
 class Event {
+  @JsonKey(name: "eventcontent")
   final String content;
+  @JsonKey(name: "eventname")
   final String name;
+  @JsonKey(name: "eventoptions")
   final List<String> options;
   String result;
 

@@ -25,11 +25,34 @@ class _GameScreenState extends State<GameScreen> {
                     fit: BoxFit.cover)),
           ).blurred(blur: 5, colorOpacity: 0.1),
           const Positioned(top: 10, right: 10, child: PeriodWidget()),
-          const Positioned(top: 90, right: 10, child: PlayerAbilityWidget()),
           Positioned(
               bottom: 50,
               left: MediaQuery.of(context).size.width * (1 - 0.95) / 2,
               child: const EventBoard()),
+          const Positioned(top: 90, right: 10, child: PlayerAbilityWidget()),
+          Positioned(
+              bottom: 0,
+              child: SizedBox(
+                height: 50,
+                width: MediaQuery.of(context).size.width,
+                child: Row(
+                  children: [
+                    const Spacer(),
+                    InkWell(
+                      onTap: () {
+                        /// TODO 这里要做一个设置页面
+                      },
+                      child: const Icon(
+                        Icons.settings,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    )
+                  ],
+                ),
+              ))
         ],
       ),
     );
