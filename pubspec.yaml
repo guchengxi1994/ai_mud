@@ -13,6 +13,7 @@ dependencies:
   cupertino_icons: ^1.0.6
   flutter:
     sdk: flutter
+  flutter_radar_chart: ^0.2.1
   flutter_riverpod: ^2.5.1
   isar: 
     version: 3.1.7
@@ -26,6 +27,7 @@ dependencies:
       url: https://github.com/guchengxi1994/langchain_lib
   markdown_widget: ^2.3.2+6
   riverpod: ^2.5.1
+  toastification: ^2.1.0
   window_manager: ^0.3.9
   
 

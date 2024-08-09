@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:ai_mud/game/game_router.dart';
+import 'package:ai_mud/global/system_notifier.dart';
 import 'package:ai_mud/opening/components/new_game_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -48,13 +50,24 @@ class ButtonsNotifier extends AutoDisposeNotifier<ButtonState> {
               return const Center(
                 child: NewGameDialog(),
               );
-            });
+            }).then((v) {
+          if (v == 1) {
+            // ignore: use_build_context_synchronously
+            GameRouter.open(context);
+          }
+        });
       },
     ),
     ButtonModel(
       content: "承",
       debugLabel: 2,
-      onTap: (context, ref) {},
+      onTap: (context, ref) async {
+        final last = await ref.read(systemProvider.notifier).loadLast();
+        if (last) {
+          // ignore: use_build_context_synchronously
+          GameRouter.open(context);
+        }
+      },
     ),
     ButtonModel(content: "转", debugLabel: 3, onTap: null),
     ButtonModel(

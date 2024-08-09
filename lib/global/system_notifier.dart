@@ -41,7 +41,7 @@ class YearMonthPeriod {
 
   static YearMonthPeriod calculateYearMonthPeriod(int input) {
     if (input <= 0) {
-      throw ArgumentError("输入的正整数必须大于零");
+      input = 1;
     }
 
     // 每年有 12 个月，每个月有 3 旬
@@ -81,7 +81,7 @@ class SystemNotifier extends Notifier<SystemState?> {
     return null;
   }
 
-  Future loadLast() async {
+  Future<bool> loadLast() async {
     final last =
         await database.isar!.systems.where().sortByCreateAtDesc().findFirst();
     if (last != null) {
@@ -90,7 +90,35 @@ class SystemNotifier extends Notifier<SystemState?> {
         worldSetting: last.worldSetting,
         systemId: last.id,
       );
+      return true;
     }
+
+    return false;
+  }
+
+  Future<System> getCurrent() async {
+    return (await database.isar!.systems
+        .where()
+        .idEqualTo(state!.systemId)
+        .findFirst())!;
+  }
+
+  Future<int> getCurrentAgeNumber() async {
+    if (state == null) {
+      return 1;
+    }
+
+    final historyLength = await database.isar!.systems
+        .where()
+        .idEqualTo(state!.systemId)
+        .findFirst()
+        .then((v) => v?.history.length);
+
+    if (historyLength == null) {
+      return 1;
+    }
+
+    return historyLength;
   }
 
   Future newGame(NewGameState newGameConfig) async {
@@ -106,6 +134,7 @@ class SystemNotifier extends Notifier<SystemState?> {
 
     System system = System()
       ..type = newGameConfig.worldType
+      ..details.add(newGameConfig.worldOption)
       ..worldSetting = newGameConfig.worldSetting;
 
     await database.isar!.writeTxn(() async {
@@ -121,6 +150,11 @@ class SystemNotifier extends Notifier<SystemState?> {
       worldSetting: newGameConfig.worldSetting,
       systemId: system.id,
     );
+  }
+
+  Future<PlayerAbility> getAbility() async {
+    return (await database.isar!.players.where().findFirst())?.ability ??
+        PlayerAbility();
   }
 
   Future<YearMonthPeriod?> getCurrentAge() async {

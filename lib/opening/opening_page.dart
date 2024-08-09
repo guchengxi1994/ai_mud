@@ -19,6 +19,7 @@ class OpeningPage extends ConsumerWidget {
         },
         child: Stack(
           children: [
+            // GameScreen()
             Container(
               decoration: const BoxDecoration(
                   image: DecorationImage(

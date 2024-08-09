@@ -1,4 +1,4 @@
-import 'package:ai_mud/opening/opening_page.dart';
+import 'package:ai_mud/global/routers.dart';
 import 'package:flutter/material.dart';
 
 class MyApp extends StatelessWidget {
@@ -6,9 +6,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: OpeningPage(),
+      routes: AppRouters.routes,
     );
   }
 }

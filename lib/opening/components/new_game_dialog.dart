@@ -34,17 +34,22 @@ class NewGameDialog extends ConsumerWidget {
                 ElevatedButton(
                     onPressed: ref.watch(newGameProvider.notifier).valid
                         ? () {
-                            ref.read(newGameProvider.notifier).changePlayerName(
-                                ref
-                                    .read(newGameProvider.notifier)
-                                    .controller
-                                    .text);
+                            var name = ref
+                                .read(newGameProvider.notifier)
+                                .controller
+                                .text;
+                            if (name.isNotEmpty) {
+                              name = "张三";
+                            }
+                            ref
+                                .read(newGameProvider.notifier)
+                                .changePlayerName(name);
                             ref
                                 .read(systemProvider.notifier)
                                 .newGame(ref.watch(newGameProvider))
                                 .then((_) {
                               // ignore: use_build_context_synchronously
-                              Navigator.of(context).pop();
+                              Navigator.of(context).pop(1);
                             });
                           }
                         : null,
