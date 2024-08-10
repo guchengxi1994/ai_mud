@@ -13,13 +13,13 @@ class OpeningPage extends ConsumerWidget {
     final blurState = ref.watch(blurProvider);
 
     return Scaffold(
-      body: GestureDetector(
+      body: SafeArea(
+          child: GestureDetector(
         onTap: () {
           ref.read(blurProvider.notifier).changeState();
         },
         child: Stack(
           children: [
-            // GameScreen()
             Container(
               decoration: const BoxDecoration(
                   image: DecorationImage(
@@ -33,7 +33,7 @@ class OpeningPage extends ConsumerWidget {
             )
           ],
         ),
-      ),
+      )),
     );
   }
 }

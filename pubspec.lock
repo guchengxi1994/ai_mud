@@ -557,10 +557,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "8f9d443bab687be8bbed380ac0a8144242852bdb"
+      resolved-ref: e68be618fe4aae8d6c7b7017cf0f0bc05e27c49a
       url: "https://github.com/guchengxi1994/langchain_lib"
     source: git
-    version: "0.0.1"
+    version: "0.0.2"
   langchain_openai:
     dependency: transitive
     description:
@@ -857,6 +857,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.0"
+  showcaseview:
+    dependency: "direct main"
+    description:
+      name: showcaseview
+      sha256: f236c1f44b286e1ba888f8701adca067af92c33e29ea937d0fe9b4a29d4cd41e
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.0.0"
   sky_engine:
     dependency: transitive
     description: flutter
