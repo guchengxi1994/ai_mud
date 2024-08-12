@@ -11,7 +11,10 @@ class SystemConfig {
   @JsonKey(name: "system-role")
   final List<String> systemRole;
 
-  SystemConfig({required this.games, required this.systemRole});
+  final List<String> common;
+
+  SystemConfig(
+      {required this.games, required this.systemRole, required this.common});
 
   factory SystemConfig.fromJson(Map<String, dynamic> json) =>
       _$SystemConfigFromJson(json);

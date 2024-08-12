@@ -126,7 +126,7 @@ class EventBoardState extends ConsumerState<EventBoard> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(10),
                       onTap: () {
-                        e!.result = v;
+                        e!.result = "${v.content} => ${v.result}";
                         ref
                             .read(gameProvider.notifier)
                             .saveHistoryToIsar(e!)
@@ -145,7 +145,7 @@ class EventBoardState extends ConsumerState<EventBoard> {
                         height: 60,
                         width: MediaQuery.of(context).size.width * 0.8,
                         child: Center(
-                          child: Text(v),
+                          child: Text(v.content),
                         ),
                       ),
                     ),

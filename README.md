@@ -6,6 +6,9 @@ a mud game built with flutter and LLM
 
 ## Changelog
 
+* 0.1.2 (unreleased)
+  - refactor `event`
+
 * 0.1.1 (unreleased)
   - refactor `history`
   - add `showcase`
