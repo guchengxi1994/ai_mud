@@ -32,6 +32,12 @@ void main() async {
     await audioUtils.setloop();
     await audioUtils.playMainBgm();
 
+    AiClient aiClient = AiClient();
+    IsarDatabase database = IsarDatabase();
+    await database.initialDatabase();
+    aiClient.initOpenAi(DevUtils.env);
+    await aiClient.initSystemConfig(DevUtils.settings);
+
     windowManager.waitUntilReadyToShow(windowOptions, () async {
       await windowManager.show();
       await windowManager.focus();
@@ -45,11 +51,5 @@ void main() async {
     }
   });
 
-  IsarDatabase database = IsarDatabase();
-  await database.initialDatabase();
-
-  AiClient aiClient = AiClient();
-  aiClient.initOpenAi(DevUtils.env);
-  aiClient.initSystemConfig(DevUtils.settings);
   runApp(const ProviderScope(child: MyApp()));
 }

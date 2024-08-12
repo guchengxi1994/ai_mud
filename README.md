@@ -6,6 +6,11 @@ a mud game built with flutter and LLM
 
 ## Changelog
 
+* 0.2.0 (WIP)
+  - feat: store openai configs (WIP)
+  - feat: going to support mobiles (WIP)
+  - fix: initial game month/period not correct bug
+
 * 0.1.3 (unreleased)
   - feat: ability changes when `moveNext()`
   - fix: ability form not repaint

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:ai_mud/common/dev_utils.dart';
+import 'package:flutter/services.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'system.g.dart';
@@ -23,6 +24,12 @@ class SystemConfig {
 
   static SystemConfig fromPath(String path) {
     return SystemConfig.fromJson(jsonDecode(DevUtils.readJson(path)));
+  }
+
+  static Future<SystemConfig> fromAsset(String s) async {
+    final data = await rootBundle.loadString(s);
+
+    return SystemConfig.fromJson(jsonDecode(data));
   }
 }
 

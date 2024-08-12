@@ -1,3 +1,4 @@
+import 'package:ai_mud/common/logger_utils.dart';
 import 'package:ai_mud/global/system_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -100,6 +101,7 @@ class PeriodWidgetState extends ConsumerState<PeriodWidget>
     final state = ref.watch(systemProvider.select((p) => p.historyLength));
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      logger.info("period widget rebuild : $state");
       calculateYearMonthTenDay(state);
     });
 

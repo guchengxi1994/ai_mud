@@ -14,8 +14,12 @@ class AiClient {
     OpenaiClient.fromEnv(path);
   }
 
-  initSystemConfig(String path) {
-    systemConfig = SystemConfig.fromPath(path);
+  initOpenAiWithString(String s) {
+    OpenaiClient.fromString(s);
+  }
+
+  Future initSystemConfig(String path) async {
+    systemConfig = await SystemConfig.fromAsset(path);
   }
 
   Stream<ChatResult> stream(List<ChatMessage> history,

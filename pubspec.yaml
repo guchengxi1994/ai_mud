@@ -2,7 +2,7 @@ name: ai_mud
 description: "a mud game built with flutter and LLM"
 publish_to: 'none' 
 
-version: 0.1.3
+version: 0.2.0
 
 environment:
   sdk: '>=3.4.3 <4.0.0'
@@ -29,7 +29,7 @@ dependencies:
   riverpod: ^2.5.1
   showcaseview: ^3.0.0
   toastification: ^2.1.0
-  window_manager: ^0.3.9
+  window_manager: ^0.4.0
   
 
 dev_dependencies:
@@ -50,6 +50,7 @@ flutter:
   assets:
     - assets/audios/
     - assets/images/
+    - assets/settings/settings.json
 
 flutter_launcher_icons:   # flutter pub run flutter_launcher_icons
   android: "launcher_icon"

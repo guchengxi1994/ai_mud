@@ -42,4 +42,26 @@ class AppStyle {
         enabledBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Color.fromARGB(255, 159, 159, 159))));
   }
+
+  static InputDecoration inputDecorationWithHintAndLabel(
+      String hint, String label,
+      {double fontSize = 12}) {
+    return InputDecoration(
+        hintText: hint,
+        errorStyle: const TextStyle(height: 0),
+        labelText: label,
+        hintStyle: TextStyle(color: Colors.white, fontSize: fontSize),
+        contentPadding: const EdgeInsets.only(left: 10, bottom: 15),
+        border: InputBorder.none,
+        // focusedErrorBorder:
+        //     OutlineInputBorder(borderSide: BorderSide(color: Colors.redAccent)),
+        focusedErrorBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: AppStyle.appColor)),
+        errorBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.redAccent)),
+        focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: AppStyle.appColor)),
+        enabledBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Color.fromARGB(255, 159, 159, 159))));
+  }
 }
