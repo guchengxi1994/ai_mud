@@ -183,6 +183,11 @@ class SystemNotifier extends Notifier<SystemState> {
         PlayerAbility();
   }
 
+  PlayerAbility getAbilitySync() {
+    return (database.isar!.players.where().findFirstSync())?.ability ??
+        PlayerAbility();
+  }
+
   Future<YearMonthPeriod?> getCurrentAge() async {
     if (state.systemId == -1) {
       return null;

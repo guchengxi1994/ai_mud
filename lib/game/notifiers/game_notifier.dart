@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:ai_mud/common/utils.dart';
 import 'package:ai_mud/game/models/event.dart';
 import 'package:ai_mud/global/global.dart';
 import 'package:ai_mud/global/system_notifier.dart';
 import 'package:ai_mud/isar/chat_history.dart';
 import 'package:ai_mud/isar/database.dart';
+import 'package:ai_mud/isar/player.dart';
 import 'package:ai_mud/isar/system.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -114,14 +116,21 @@ class GameNotifier extends AutoDisposeNotifier<GameState> {
   }
 
   Future saveHistoryToIsar(Event e) async {
+    PlayerAbility ability = PlayerAbility.fromString(e.result);
+    History history = History()
+      ..content = e.content
+      ..name = e.name
+      ..options = e.options.map((v) => v.content).toList()
+      ..result = e.result;
+    System system = await ref.read(systemProvider.notifier).getCurrent();
+    system.history = [...system.history, history];
+
+    system.player.value!.ability = system.player.value!.ability + ability;
+    logger.info("ability adjust: $ability");
+
     await isarDatabase.isar!.writeTxn(() async {
-      History history = History()
-        ..content = e.content
-        ..name = e.name
-        ..options = e.options.map((v) => v.content).toList()
-        ..result = e.result;
-      System system = await ref.read(systemProvider.notifier).getCurrent();
-      system.history = [...system.history, history];
+      logger.info("ability after: ${system.player.value!.ability}");
+      await isarDatabase.isar!.players.put(system.player.value!);
       await isarDatabase.isar!.systems.put(system);
     });
 

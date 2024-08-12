@@ -6,6 +6,11 @@ a mud game built with flutter and LLM
 
 ## Changelog
 
+* 0.1.3 (unreleased)
+  - feat: ability changes when `moveNext()`
+  - fix: ability form not repaint
+  - chore: modify prompts
+
 * 0.1.2 (unreleased)
   - refactor `event`
 
