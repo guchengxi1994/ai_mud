@@ -6,9 +6,12 @@ a mud game built with flutter and LLM
 
 ## Changelog
 
+* 0.3.0 (WIP)
+  - todo: store some ai responses to save tokens
+
 * 0.2.0 (WIP)
-  - feat: store openai configs (WIP)
-  - feat: going to support mobiles (WIP)
+  - todo: store openai configs (WIP)
+  - todo: going to support mobiles (WIP)
   - fix: initial game month/period not correct bug
 
 * 0.1.3 (unreleased)

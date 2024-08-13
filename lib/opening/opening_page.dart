@@ -27,6 +27,18 @@ class OpeningPage extends ConsumerWidget {
               );
             });
       }
+
+      /// for test
+      // showGeneralDialog(
+      //     context: context,
+      //     barrierColor: Colors.transparent,
+      //     barrierDismissible: true,
+      //     barrierLabel: "config-form",
+      //     pageBuilder: (c, _, __) {
+      //       return const Center(
+      //         child: OpenaiConfigForm(),
+      //       );
+      //     });
     });
 
     return Scaffold(

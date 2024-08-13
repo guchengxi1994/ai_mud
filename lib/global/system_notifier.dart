@@ -124,7 +124,6 @@ class SystemNotifier extends Notifier<SystemState> {
       return;
     }
 
-    /// TODO 进行下一轮
     final historyLength = await database.isar!.systems
         .where()
         .idEqualTo(state.systemId)

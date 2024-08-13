@@ -61,6 +61,8 @@ class AppStyle {
             borderSide: BorderSide(color: Colors.redAccent)),
         focusedBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: AppStyle.appColor)),
+        disabledBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Color.fromARGB(255, 159, 159, 159))),
         enabledBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Color.fromARGB(255, 159, 159, 159))));
   }

@@ -5,6 +5,7 @@ import 'package:ai_mud/isar/database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:langchain_lib/langchain_lib.dart';
 
 // ignore: depend_on_referenced_packages
 import 'package:logging/logging.dart';
@@ -14,6 +15,12 @@ import 'global/global.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Logger.root.level = Level.ALL; // defaults to Level.INFO
+  Logger.root.onRecord.listen((record) {
+    if (kDebugMode) {
+      print('${record.level.name}: ${record.time}: ${record.message}');
+    }
+  });
   if (Platform.isWindows || Platform.isLinux) {
     await windowManager.ensureInitialized();
 
@@ -35,7 +42,13 @@ void main() async {
     AiClient aiClient = AiClient();
     IsarDatabase database = IsarDatabase();
     await database.initialDatabase();
-    aiClient.initOpenAi(DevUtils.env);
+    await aiClient.initFromDatabase(database);
+
+    if (OpenaiClient.models == null) {
+      logger.info("load config from env");
+      aiClient.initOpenAi(DevUtils.env);
+    }
+
     await aiClient.initSystemConfig(DevUtils.settings);
 
     windowManager.waitUntilReadyToShow(windowOptions, () async {
@@ -43,13 +56,6 @@ void main() async {
       await windowManager.focus();
     });
   }
-
-  Logger.root.level = Level.ALL; // defaults to Level.INFO
-  Logger.root.onRecord.listen((record) {
-    if (kDebugMode) {
-      print('${record.level.name}: ${record.time}: ${record.message}');
-    }
-  });
 
   runApp(const ProviderScope(child: MyApp()));
 }

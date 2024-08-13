@@ -33,18 +33,13 @@ const OpenaiConfigHistorySchema = CollectionSchema(
       name: r'model',
       type: IsarType.string,
     ),
-    r'name': PropertySchema(
-      id: 3,
-      name: r'name',
-      type: IsarType.string,
-    ),
     r'tag': PropertySchema(
-      id: 4,
+      id: 3,
       name: r'tag',
       type: IsarType.string,
     ),
     r'temperature': PropertySchema(
-      id: 5,
+      id: 4,
       name: r'temperature',
       type: IsarType.double,
     )
@@ -55,19 +50,6 @@ const OpenaiConfigHistorySchema = CollectionSchema(
   deserializeProp: _openaiConfigHistoryDeserializeProp,
   idName: r'id',
   indexes: {
-    r'name': IndexSchema(
-      id: 879695947855722453,
-      name: r'name',
-      unique: true,
-      replace: false,
-      properties: [
-        IndexPropertySchema(
-          name: r'name',
-          type: IndexType.hash,
-          caseSensitive: true,
-        )
-      ],
-    ),
     r'tag': IndexSchema(
       id: -8827799455852696894,
       name: r'tag',
@@ -99,7 +81,6 @@ int _openaiConfigHistoryEstimateSize(
   bytesCount += 3 + object.apiBaseUrl.length * 3;
   bytesCount += 3 + object.apiKey.length * 3;
   bytesCount += 3 + object.model.length * 3;
-  bytesCount += 3 + object.name.length * 3;
   bytesCount += 3 + object.tag.length * 3;
   return bytesCount;
 }
@@ -113,9 +94,8 @@ void _openaiConfigHistorySerialize(
   writer.writeString(offsets[0], object.apiBaseUrl);
   writer.writeString(offsets[1], object.apiKey);
   writer.writeString(offsets[2], object.model);
-  writer.writeString(offsets[3], object.name);
-  writer.writeString(offsets[4], object.tag);
-  writer.writeDouble(offsets[5], object.temperature);
+  writer.writeString(offsets[3], object.tag);
+  writer.writeDouble(offsets[4], object.temperature);
 }
 
 OpenaiConfigHistory _openaiConfigHistoryDeserialize(
@@ -129,9 +109,8 @@ OpenaiConfigHistory _openaiConfigHistoryDeserialize(
   object.apiKey = reader.readString(offsets[1]);
   object.id = id;
   object.model = reader.readString(offsets[2]);
-  object.name = reader.readString(offsets[3]);
-  object.tag = reader.readString(offsets[4]);
-  object.temperature = reader.readDouble(offsets[5]);
+  object.tag = reader.readString(offsets[3]);
+  object.temperature = reader.readDouble(offsets[4]);
   return object;
 }
 
@@ -151,8 +130,6 @@ P _openaiConfigHistoryDeserializeProp<P>(
     case 3:
       return (reader.readString(offset)) as P;
     case 4:
-      return (reader.readString(offset)) as P;
-    case 5:
       return (reader.readDouble(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -174,59 +151,6 @@ void _openaiConfigHistoryAttach(
 }
 
 extension OpenaiConfigHistoryByIndex on IsarCollection<OpenaiConfigHistory> {
-  Future<OpenaiConfigHistory?> getByName(String name) {
-    return getByIndex(r'name', [name]);
-  }
-
-  OpenaiConfigHistory? getByNameSync(String name) {
-    return getByIndexSync(r'name', [name]);
-  }
-
-  Future<bool> deleteByName(String name) {
-    return deleteByIndex(r'name', [name]);
-  }
-
-  bool deleteByNameSync(String name) {
-    return deleteByIndexSync(r'name', [name]);
-  }
-
-  Future<List<OpenaiConfigHistory?>> getAllByName(List<String> nameValues) {
-    final values = nameValues.map((e) => [e]).toList();
-    return getAllByIndex(r'name', values);
-  }
-
-  List<OpenaiConfigHistory?> getAllByNameSync(List<String> nameValues) {
-    final values = nameValues.map((e) => [e]).toList();
-    return getAllByIndexSync(r'name', values);
-  }
-
-  Future<int> deleteAllByName(List<String> nameValues) {
-    final values = nameValues.map((e) => [e]).toList();
-    return deleteAllByIndex(r'name', values);
-  }
-
-  int deleteAllByNameSync(List<String> nameValues) {
-    final values = nameValues.map((e) => [e]).toList();
-    return deleteAllByIndexSync(r'name', values);
-  }
-
-  Future<Id> putByName(OpenaiConfigHistory object) {
-    return putByIndex(r'name', object);
-  }
-
-  Id putByNameSync(OpenaiConfigHistory object, {bool saveLinks = true}) {
-    return putByIndexSync(r'name', object, saveLinks: saveLinks);
-  }
-
-  Future<List<Id>> putAllByName(List<OpenaiConfigHistory> objects) {
-    return putAllByIndex(r'name', objects);
-  }
-
-  List<Id> putAllByNameSync(List<OpenaiConfigHistory> objects,
-      {bool saveLinks = true}) {
-    return putAllByIndexSync(r'name', objects, saveLinks: saveLinks);
-  }
-
   Future<OpenaiConfigHistory?> getByTag(String tag) {
     return getByIndex(r'tag', [tag]);
   }
@@ -357,51 +281,6 @@ extension OpenaiConfigHistoryQueryWhere
         upper: upperId,
         includeUpper: includeUpper,
       ));
-    });
-  }
-
-  QueryBuilder<OpenaiConfigHistory, OpenaiConfigHistory, QAfterWhereClause>
-      nameEqualTo(String name) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'name',
-        value: [name],
-      ));
-    });
-  }
-
-  QueryBuilder<OpenaiConfigHistory, OpenaiConfigHistory, QAfterWhereClause>
-      nameNotEqualTo(String name) {
-    return QueryBuilder.apply(this, (query) {
-      if (query.whereSort == Sort.asc) {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'name',
-              lower: [],
-              upper: [name],
-              includeUpper: false,
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'name',
-              lower: [name],
-              includeLower: false,
-              upper: [],
-            ));
-      } else {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'name',
-              lower: [name],
-              includeLower: false,
-              upper: [],
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'name',
-              lower: [],
-              upper: [name],
-              includeUpper: false,
-            ));
-      }
     });
   }
 
@@ -918,142 +797,6 @@ extension OpenaiConfigHistoryQueryFilter on QueryBuilder<OpenaiConfigHistory,
   }
 
   QueryBuilder<OpenaiConfigHistory, OpenaiConfigHistory, QAfterFilterCondition>
-      nameEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'name',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<OpenaiConfigHistory, OpenaiConfigHistory, QAfterFilterCondition>
-      nameGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'name',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<OpenaiConfigHistory, OpenaiConfigHistory, QAfterFilterCondition>
-      nameLessThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'name',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<OpenaiConfigHistory, OpenaiConfigHistory, QAfterFilterCondition>
-      nameBetween(
-    String lower,
-    String upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'name',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<OpenaiConfigHistory, OpenaiConfigHistory, QAfterFilterCondition>
-      nameStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'name',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<OpenaiConfigHistory, OpenaiConfigHistory, QAfterFilterCondition>
-      nameEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'name',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<OpenaiConfigHistory, OpenaiConfigHistory, QAfterFilterCondition>
-      nameContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'name',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<OpenaiConfigHistory, OpenaiConfigHistory, QAfterFilterCondition>
-      nameMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'name',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<OpenaiConfigHistory, OpenaiConfigHistory, QAfterFilterCondition>
-      nameIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'name',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<OpenaiConfigHistory, OpenaiConfigHistory, QAfterFilterCondition>
-      nameIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'name',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<OpenaiConfigHistory, OpenaiConfigHistory, QAfterFilterCondition>
       tagEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -1307,20 +1050,6 @@ extension OpenaiConfigHistoryQuerySortBy
   }
 
   QueryBuilder<OpenaiConfigHistory, OpenaiConfigHistory, QAfterSortBy>
-      sortByName() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'name', Sort.asc);
-    });
-  }
-
-  QueryBuilder<OpenaiConfigHistory, OpenaiConfigHistory, QAfterSortBy>
-      sortByNameDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'name', Sort.desc);
-    });
-  }
-
-  QueryBuilder<OpenaiConfigHistory, OpenaiConfigHistory, QAfterSortBy>
       sortByTag() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'tag', Sort.asc);
@@ -1408,20 +1137,6 @@ extension OpenaiConfigHistoryQuerySortThenBy
   }
 
   QueryBuilder<OpenaiConfigHistory, OpenaiConfigHistory, QAfterSortBy>
-      thenByName() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'name', Sort.asc);
-    });
-  }
-
-  QueryBuilder<OpenaiConfigHistory, OpenaiConfigHistory, QAfterSortBy>
-      thenByNameDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'name', Sort.desc);
-    });
-  }
-
-  QueryBuilder<OpenaiConfigHistory, OpenaiConfigHistory, QAfterSortBy>
       thenByTag() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'tag', Sort.asc);
@@ -1474,13 +1189,6 @@ extension OpenaiConfigHistoryQueryWhereDistinct
   }
 
   QueryBuilder<OpenaiConfigHistory, OpenaiConfigHistory, QDistinct>
-      distinctByName({bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<OpenaiConfigHistory, OpenaiConfigHistory, QDistinct>
       distinctByTag({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'tag', caseSensitive: caseSensitive);
@@ -1519,12 +1227,6 @@ extension OpenaiConfigHistoryQueryProperty
   QueryBuilder<OpenaiConfigHistory, String, QQueryOperations> modelProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'model');
-    });
-  }
-
-  QueryBuilder<OpenaiConfigHistory, String, QQueryOperations> nameProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'name');
     });
   }
 
