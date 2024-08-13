@@ -3,6 +3,7 @@
 import 'package:ai_mud/game/components/period_widget.dart';
 import 'package:ai_mud/global/system_notifier.dart';
 import 'package:ai_mud/isar/player.dart';
+import 'package:ai_mud/settings/settings_screen_router.dart';
 import 'package:blur/blur.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -89,7 +90,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                         description: "你可以在这里设置一些游戏选项",
                         child: InkWell(
                           onTap: () {
-                            /// TODO 这里要做一个设置页面
+                            SettingsPageRouter.open(context);
                           },
                           child: const Icon(
                             Icons.settings,
