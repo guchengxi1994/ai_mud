@@ -11,6 +11,8 @@ class System {
 
   late String type;
 
+  bool hintShown = false;
+
   /// 世界观
   late String worldSetting;
   late List<String> details = [];
@@ -40,13 +42,11 @@ class System {
   String get prompt => _prompt();
 }
 
-enum HistoryType { player, ai }
-
 @embedded
 class History {
   int createAt = DateTime.now().millisecondsSinceEpoch;
   late String content;
-
-  @enumerated
-  late HistoryType type;
+  late String name;
+  late List<String> options;
+  late String result;
 }

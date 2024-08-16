@@ -1,3 +1,4 @@
+import 'package:ai_mud/common/logger_utils.dart';
 import 'package:ai_mud/global/system_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,7 +12,7 @@ class PeriodWidget extends ConsumerStatefulWidget {
 
 class PeriodWidgetState extends ConsumerState<PeriodWidget>
     with TickerProviderStateMixin {
-  late int dayNumber = 1;
+  // late int dayNumber = 1;
   late AnimationController _yearController;
   late AnimationController _monthController;
   late AnimationController _tenDayPeriodController;
@@ -22,13 +23,6 @@ class PeriodWidgetState extends ConsumerState<PeriodWidget>
   late ValueNotifier<String> _yearNotifier;
   late ValueNotifier<String> _monthNotifier;
   late ValueNotifier<String> _tenDayPeriodNotifier;
-
-  // ignore: prefer_typing_uninitialized_variables
-  var future;
-
-  loadHistory() async {
-    dayNumber = await ref.read(systemProvider.notifier).getCurrentAgeNumber();
-  }
 
   @override
   void initState() {
@@ -60,15 +54,9 @@ class PeriodWidgetState extends ConsumerState<PeriodWidget>
     _yearNotifier = ValueNotifier<String>("1");
     _monthNotifier = ValueNotifier<String>("1");
     _tenDayPeriodNotifier = ValueNotifier<String>("上旬");
-
-    future = loadHistory();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      calculateYearMonthTenDay();
-    });
   }
 
-  calculateYearMonthTenDay() {
+  calculateYearMonthTenDay(int dayNumber) {
     const int daysInYear = 36;
     const int daysInMonth = 3;
 
@@ -110,6 +98,13 @@ class PeriodWidgetState extends ConsumerState<PeriodWidget>
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(systemProvider.select((p) => p.historyLength));
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      logger.info("period widget rebuild : $state");
+      calculateYearMonthTenDay(state);
+    });
+
     return Material(
       borderRadius: BorderRadius.circular(10),
       elevation: 10,
@@ -117,68 +112,58 @@ class PeriodWidgetState extends ConsumerState<PeriodWidget>
         width: 200,
         height: 50,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
-        child: FutureBuilder(
-            future: future,
-            builder: (c, s) {
-              if (s.connectionState != ConnectionState.done) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ValueListenableBuilder(
-                      valueListenable: _yearNotifier,
-                      builder: (c, v, _) {
-                        return AnimatedBuilder(
-                            animation: _yearAnimation,
-                            builder: (ctx, c) {
-                              return Opacity(
-                                  opacity: _yearAnimation.value > 0
-                                      ? _yearAnimation.value
-                                      : 1.0,
-                                  child: Text(v));
-                            });
-                      }),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 10, right: 10),
-                    child: Text("年"),
-                  ),
-                  ValueListenableBuilder(
-                      valueListenable: _monthNotifier,
-                      builder: (c, v, _) {
-                        return AnimatedBuilder(
-                            animation: _monthAnimation,
-                            builder: (ctx, c) {
-                              return Opacity(
-                                  opacity: _monthAnimation.value > 0
-                                      ? _monthAnimation.value
-                                      : 1.0,
-                                  child: Text(v));
-                            });
-                      }),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 10, right: 10),
-                    child: Text("月"),
-                  ),
-                  ValueListenableBuilder(
-                      valueListenable: _tenDayPeriodNotifier,
-                      builder: (c, v, _) {
-                        return AnimatedBuilder(
-                            animation: _tenDayPeriodAnimation,
-                            builder: (ctx, c) {
-                              return Opacity(
-                                  opacity: _tenDayPeriodAnimation.value > 0
-                                      ? _tenDayPeriodAnimation.value
-                                      : 1.0,
-                                  child: Text(v));
-                            });
-                      }),
-                ],
-              );
-            }),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ValueListenableBuilder(
+                valueListenable: _yearNotifier,
+                builder: (c, v, _) {
+                  return AnimatedBuilder(
+                      animation: _yearAnimation,
+                      builder: (ctx, c) {
+                        return Opacity(
+                            opacity: _yearAnimation.value > 0
+                                ? _yearAnimation.value
+                                : 1.0,
+                            child: Text(v));
+                      });
+                }),
+            const Padding(
+              padding: EdgeInsets.only(left: 10, right: 10),
+              child: Text("年"),
+            ),
+            ValueListenableBuilder(
+                valueListenable: _monthNotifier,
+                builder: (c, v, _) {
+                  return AnimatedBuilder(
+                      animation: _monthAnimation,
+                      builder: (ctx, c) {
+                        return Opacity(
+                            opacity: _monthAnimation.value > 0
+                                ? _monthAnimation.value
+                                : 1.0,
+                            child: Text(v));
+                      });
+                }),
+            const Padding(
+              padding: EdgeInsets.only(left: 10, right: 10),
+              child: Text("月"),
+            ),
+            ValueListenableBuilder(
+                valueListenable: _tenDayPeriodNotifier,
+                builder: (c, v, _) {
+                  return AnimatedBuilder(
+                      animation: _tenDayPeriodAnimation,
+                      builder: (ctx, c) {
+                        return Opacity(
+                            opacity: _tenDayPeriodAnimation.value > 0
+                                ? _tenDayPeriodAnimation.value
+                                : 1.0,
+                            child: Text(v));
+                      });
+                }),
+          ],
+        ),
       ),
     );
   }

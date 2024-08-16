@@ -9,25 +9,28 @@ class EventBoard extends ConsumerStatefulWidget {
   const EventBoard({super.key});
 
   @override
-  ConsumerState<EventBoard> createState() => _EventBoardState();
+  ConsumerState<EventBoard> createState() => EventBoardState();
 }
 
-class _EventBoardState extends ConsumerState<EventBoard> {
+class EventBoardState extends ConsumerState<EventBoard> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      ref.read(gameProvider.notifier).plot(
-        await ref.read(systemProvider.notifier).getCurrent(),
-        onDone: (event) {
-          if (event != null) {
-            setState(() {
-              e = event;
-            });
-          }
-        },
-      );
-    });
+  }
+
+  plot() async {
+    ref.read(gameProvider.notifier).plot(
+      await ref.read(systemProvider.notifier).getCurrent(),
+      onDone: (event) {
+        if (event != null) {
+          setState(() {
+            e = event;
+          });
+        } else {
+          ref.read(gameProvider.notifier).setError();
+        }
+      },
+    );
   }
 
   // ignore: avoid_init_to_null
@@ -53,10 +56,13 @@ class _EventBoardState extends ConsumerState<EventBoard> {
                 child: e == null
                     ? SingleChildScrollView(
                         controller: ref.read(gameProvider.notifier).controller,
-                        child: MarkdownBlock(
-                          data: state.dialog,
-                          selectable: false,
-                          config: MarkdownConfig.defaultConfig,
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: MarkdownBlock(
+                            data: state.dialog,
+                            selectable: false,
+                            config: MarkdownConfig.defaultConfig,
+                          ),
                         ),
                       )
                     : buildEvent()),
@@ -68,6 +74,7 @@ class _EventBoardState extends ConsumerState<EventBoard> {
                           setState(() {
                             e = null;
                           });
+                          plot();
                         }
                       : null,
                   child: const Text("重试一次")),
@@ -119,7 +126,16 @@ class _EventBoardState extends ConsumerState<EventBoard> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(10),
                       onTap: () {
-                        print(v);
+                        e!.result = "${v.content} => ${v.result}";
+                        ref
+                            .read(gameProvider.notifier)
+                            .saveHistoryToIsar(e!)
+                            .then((_) {
+                          setState(() {
+                            e = null;
+                          });
+                          plot();
+                        });
                       },
                       child: SizedBox(
                         // margin: const EdgeInsets.only(top: 10, bottom: 10),
@@ -129,7 +145,7 @@ class _EventBoardState extends ConsumerState<EventBoard> {
                         height: 60,
                         width: MediaQuery.of(context).size.width * 0.8,
                         child: Center(
-                          child: Text(v),
+                          child: Text(v.content),
                         ),
                       ),
                     ),

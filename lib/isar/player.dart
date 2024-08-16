@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_radar_chart/flutter_radar_chart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
+// ignore: depend_on_referenced_packages
+import 'package:collection/collection.dart';
 
 part 'player.g.dart';
 
@@ -30,6 +32,30 @@ class PlayerAbility {
   late double /* 智力 */ intelligence = 1;
 
   static Random random = Random();
+
+  String operator [](int index) {
+    switch (index) {
+      case 0:
+        return "End";
+      case 1:
+        return "Vit";
+      case 2:
+        return "Att";
+      case 3:
+        return "Str";
+      case 4:
+        return "Dex";
+      case 5:
+        return "Int";
+      default:
+        return "";
+    }
+  }
+
+  @override
+  String toString() {
+    return "End_${endurance.toStringAsFixed(2)};Vit_${vitality.toStringAsFixed(2)};Att_${attunement.toStringAsFixed(2)};Str_${strength.toStringAsFixed(2)};Dex_${dexterity.toStringAsFixed(2)};Int_${intelligence.toStringAsFixed(2)}";
+  }
 
   static PlayerAbility getRandom() {
     return PlayerAbility()
@@ -76,22 +102,22 @@ class PlayerAbility {
       final name = s[0];
       final value = double.tryParse(s[1]) ?? 0;
       switch (name) {
-        case "endurance":
+        case "End":
           result.endurance = value;
           break;
-        case "vitality":
+        case "Vit":
           result.vitality = value;
           break;
-        case "attunement":
+        case "Att":
           result.attunement = value;
           break;
-        case "strength":
+        case "Str":
           result.strength = value;
           break;
-        case "dexterity":
+        case "Dex":
           result.dexterity = value;
           break;
-        case "intelligence":
+        case "Int":
           result.intelligence = value;
           break;
       }
@@ -130,18 +156,21 @@ class _PlayerAbilityWidgetState extends ConsumerState<PlayerAbilityWidget> {
     ability.intelligence,
   ];
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  loadAbility() async {
-    ability = await ref.read(systemProvider.notifier).getAbility();
+  loadAbility() {
+    ability = ref.read(systemProvider.notifier).getAbilitySync();
+    data = [
+      ability.endurance,
+      ability.vitality,
+      ability.attunement,
+      ability.strength,
+      ability.dexterity,
+      ability.intelligence,
+    ];
   }
 
   void _changeSize() {
     setState(() {
-      _width = _width == 30 ? 200 : 30;
+      _width = _width == 30 ? 350 : 30;
       _height = _height == 30 ? 200 : 30;
       isExpanded = !isExpanded;
     });
@@ -149,36 +178,62 @@ class _PlayerAbilityWidgetState extends ConsumerState<PlayerAbilityWidget> {
 
   @override
   Widget build(BuildContext context) {
+    loadAbility();
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: _changeSize,
         child: AnimatedContainer(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(isExpanded ? 10 : 4),
+            color: Colors.white,
+          ),
           width: _width,
           height: _height,
-          color: Colors.white,
           duration: const Duration(seconds: 1),
           curve: Curves.easeInOut,
           child: Center(
             child: isExpanded
-                ? FutureBuilder(
-                    future: loadAbility(),
-                    builder: (c, s) {
-                      if (s.connectionState == ConnectionState.done) {
-                        return Material(
-                          borderRadius: BorderRadius.circular(10),
-                          elevation: 10,
-                          child: Padding(
-                            padding: const EdgeInsets.all(4),
-                            child: RadarChart.light(
-                                ticks: ticks, features: features, data: [data]),
+                ? Material(
+                    borderRadius: BorderRadius.circular(10),
+                    elevation: 10,
+                    child: Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: SingleChildScrollView(
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 200,
+                                height: 180,
+                                child: RadarChart.light(
+                                    ticks: ticks,
+                                    features: features,
+                                    data: [data]),
+                              ),
+                              const SizedBox(
+                                width: 60,
+                              ),
+                              SizedBox(
+                                  width: 350 - 200 - 60,
+                                  height: 180,
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: data
+                                        .mapIndexed((i, e) =>
+                                            Text("${ability[i]} : $e"))
+                                        .toList(),
+                                  ))
+                            ],
                           ),
-                        );
-                      }
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    })
+                        ),
+                      ),
+                    ),
+                  )
                 : const Material(
                     elevation: 4,
                     child: Icon(Icons.add_chart),

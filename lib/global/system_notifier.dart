@@ -19,12 +19,27 @@ class SystemState {
   final String type;
   final String worldSetting;
   final int systemId;
+  final int historyLength;
 
-  SystemState({
-    required this.type,
-    required this.worldSetting,
-    required this.systemId,
-  });
+  SystemState(
+      {this.type = "",
+      this.worldSetting = "",
+      this.systemId = -1,
+      this.historyLength = 1});
+
+  SystemState copyWith({
+    String? type,
+    String? worldSetting,
+    int? systemId,
+    int? historyLength,
+  }) {
+    return SystemState(
+      type: type ?? this.type,
+      worldSetting: worldSetting ?? this.worldSetting,
+      systemId: systemId ?? this.systemId,
+      historyLength: historyLength ?? this.historyLength,
+    );
+  }
 }
 
 class YearMonthPeriod {
@@ -71,14 +86,14 @@ class YearMonthPeriod {
   }
 }
 
-class SystemNotifier extends Notifier<SystemState?> {
+class SystemNotifier extends Notifier<SystemState> {
   final IsarDatabase database = IsarDatabase();
   final AiClient client = AiClient();
   static Random random = Random();
 
   @override
-  SystemState? build() {
-    return null;
+  SystemState build() {
+    return SystemState();
   }
 
   Future<bool> loadLast() async {
@@ -89,6 +104,7 @@ class SystemNotifier extends Notifier<SystemState?> {
         type: last.type,
         worldSetting: last.worldSetting,
         systemId: last.id,
+        historyLength: last.history.length + 1,
       );
       return true;
     }
@@ -99,26 +115,35 @@ class SystemNotifier extends Notifier<SystemState?> {
   Future<System> getCurrent() async {
     return (await database.isar!.systems
         .where()
-        .idEqualTo(state!.systemId)
+        .idEqualTo(state.systemId)
         .findFirst())!;
   }
 
-  Future<int> getCurrentAgeNumber() async {
-    if (state == null) {
-      return 1;
+  Future moveNext() async {
+    if (state.systemId == -1) {
+      return;
     }
 
     final historyLength = await database.isar!.systems
         .where()
-        .idEqualTo(state!.systemId)
+        .idEqualTo(state.systemId)
         .findFirst()
         .then((v) => v?.history.length);
 
-    if (historyLength == null) {
-      return 1;
-    }
+    state = state.copyWith(historyLength: historyLength!);
+  }
 
-    return historyLength;
+  Future<bool> getHintShown() async {
+    final system = await getCurrent();
+    return system.hintShown;
+  }
+
+  Future setHintShown() async {
+    await database.isar!.writeTxn(() async {
+      final system = await getCurrent();
+      system.hintShown = true;
+      await database.isar!.systems.put(system);
+    });
   }
 
   Future newGame(NewGameState newGameConfig) async {
@@ -157,22 +182,17 @@ class SystemNotifier extends Notifier<SystemState?> {
         PlayerAbility();
   }
 
+  PlayerAbility getAbilitySync() {
+    return (database.isar!.players.where().findFirstSync())?.ability ??
+        PlayerAbility();
+  }
+
   Future<YearMonthPeriod?> getCurrentAge() async {
-    if (state == null) {
+    if (state.systemId == -1) {
       return null;
     }
 
-    final historyLength = await database.isar!.systems
-        .where()
-        .idEqualTo(state!.systemId)
-        .findFirst()
-        .then((v) => v?.history.length);
-
-    if (historyLength == null) {
-      return null;
-    }
-
-    return YearMonthPeriod.calculateYearMonthPeriod(historyLength);
+    return YearMonthPeriod.calculateYearMonthPeriod(state.historyLength);
   }
 
   Stream<ChatResult> generateWorld(
@@ -209,6 +229,6 @@ class SystemNotifier extends Notifier<SystemState?> {
   }
 }
 
-final systemProvider = NotifierProvider<SystemNotifier, SystemState?>(() {
+final systemProvider = NotifierProvider<SystemNotifier, SystemState>(() {
   return SystemNotifier();
 });

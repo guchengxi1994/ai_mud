@@ -13,12 +13,15 @@ SystemConfig _$SystemConfigFromJson(Map<String, dynamic> json) => SystemConfig(
       systemRole: (json['system-role'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
+      common:
+          (json['common'] as List<dynamic>).map((e) => e as String).toList(),
     );
 
 Map<String, dynamic> _$SystemConfigToJson(SystemConfig instance) =>
     <String, dynamic>{
       'games': instance.games,
       'system-role': instance.systemRole,
+      'common': instance.common,
     };
 
 Game _$GameFromJson(Map<String, dynamic> json) => Game(

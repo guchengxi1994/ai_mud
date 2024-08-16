@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:blur/blur.dart';
+import 'package:langchain_lib/langchain_lib.dart';
 
 import 'components/buttons.dart';
+import 'components/openai_config_form.dart';
 import 'notifiers/blur_notifier.dart';
 
 class OpeningPage extends ConsumerWidget {
@@ -12,14 +14,41 @@ class OpeningPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final blurState = ref.watch(blurProvider);
 
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (OpenaiClient.models == null) {
+        showGeneralDialog(
+            context: context,
+            barrierColor: Colors.transparent,
+            barrierDismissible: true,
+            barrierLabel: "config-form",
+            pageBuilder: (c, _, __) {
+              return const Center(
+                child: OpenaiConfigForm(),
+              );
+            });
+      }
+
+      /// for test
+      // showGeneralDialog(
+      //     context: context,
+      //     barrierColor: Colors.transparent,
+      //     barrierDismissible: true,
+      //     barrierLabel: "config-form",
+      //     pageBuilder: (c, _, __) {
+      //       return const Center(
+      //         child: OpenaiConfigForm(),
+      //       );
+      //     });
+    });
+
     return Scaffold(
-      body: GestureDetector(
+      body: SafeArea(
+          child: GestureDetector(
         onTap: () {
           ref.read(blurProvider.notifier).changeState();
         },
         child: Stack(
           children: [
-            // GameScreen()
             Container(
               decoration: const BoxDecoration(
                   image: DecorationImage(
@@ -28,12 +57,12 @@ class OpeningPage extends ConsumerWidget {
             ).blurred(
                 blur: blurState ? 5 : 0, colorOpacity: blurState ? 0.1 : 0),
             Visibility(
-              visible: blurState,
+              visible: blurState && OpenaiClient.models != null,
               child: const OpeningScreenButtons(),
             )
           ],
         ),
-      ),
+      )),
     );
   }
 }

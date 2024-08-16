@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:ai_mud/common/dev_utils.dart';
+import 'package:flutter/services.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'system.g.dart';
@@ -11,7 +12,10 @@ class SystemConfig {
   @JsonKey(name: "system-role")
   final List<String> systemRole;
 
-  SystemConfig({required this.games, required this.systemRole});
+  final List<String> common;
+
+  SystemConfig(
+      {required this.games, required this.systemRole, required this.common});
 
   factory SystemConfig.fromJson(Map<String, dynamic> json) =>
       _$SystemConfigFromJson(json);
@@ -20,6 +24,12 @@ class SystemConfig {
 
   static SystemConfig fromPath(String path) {
     return SystemConfig.fromJson(jsonDecode(DevUtils.readJson(path)));
+  }
+
+  static Future<SystemConfig> fromAsset(String s) async {
+    final data = await rootBundle.loadString(s);
+
+    return SystemConfig.fromJson(jsonDecode(data));
   }
 }
 

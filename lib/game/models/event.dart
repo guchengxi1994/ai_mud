@@ -9,7 +9,7 @@ class Event {
   @JsonKey(name: "eventname")
   final String name;
   @JsonKey(name: "eventoptions")
-  final List<String> options;
+  final List<Option> options;
   String result;
 
   Event(
@@ -21,4 +21,16 @@ class Event {
   factory Event.fromJson(Map<String, dynamic> json) => _$EventFromJson(json);
 
   Map<String, dynamic> toJson() => _$EventToJson(this);
+}
+
+@JsonSerializable()
+class Option {
+  final String content;
+  final String result;
+
+  factory Option.fromJson(Map<String, dynamic> json) => _$OptionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$OptionToJson(this);
+
+  Option({required this.content, required this.result});
 }
