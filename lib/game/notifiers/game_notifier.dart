@@ -94,7 +94,8 @@ class GameNotifier extends AutoDisposeNotifier<GameState> {
       ...systemRoles,
       ChatMessage.humanText(prompt.toString()),
       ...userMessages,
-      ChatMessage.humanText("注意：事件\"$lastHistory\"是上一个事件，请不要回答相同的事件。"),
+      if (lastHistory != "")
+        ChatMessage.humanText("注意：事件\"$lastHistory\"是上一个事件，请不要回答相同的事件。"),
       ChatMessage.humanText(
           "注意：以下事件已回答过，请不要重复回答！已经回答的事件清单如下： ${historyList.toString()}")
     ]);
@@ -134,6 +135,9 @@ class GameNotifier extends AutoDisposeNotifier<GameState> {
     final s = (await ref.read(systemProvider.notifier).getCurrent())
         .history
         .map((v) => v.name);
+    if (s.isEmpty) {
+      return "";
+    }
     return s.last;
   }
 
