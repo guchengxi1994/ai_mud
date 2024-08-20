@@ -44,7 +44,7 @@ const ChatHistorySchema = CollectionSchema(
   getId: _chatHistoryGetId,
   getLinks: _chatHistoryGetLinks,
   attach: _chatHistoryAttach,
-  version: '3.1.7',
+  version: '3.1.8',
 );
 
 int _chatHistoryEstimateSize(

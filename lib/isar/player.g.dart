@@ -59,7 +59,7 @@ const PlayerSchema = CollectionSchema(
   getId: _playerGetId,
   getLinks: _playerGetLinks,
   attach: _playerAttach,
-  version: '3.1.7',
+  version: '3.1.8',
 );
 
 int _playerEstimateSize(
