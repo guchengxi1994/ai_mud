@@ -13,6 +13,7 @@ a mud game built with flutter and LLM
   - todo: store openai configs (WIP)
   - todo: going to support mobiles (WIP)
   - fix: initial game month/period not correct bug
+  - fix: `lastHistory` is null bug
 
 * 0.1.3 (unreleased)
   - feat: ability changes when `moveNext()`
