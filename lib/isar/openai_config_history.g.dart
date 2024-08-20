@@ -69,7 +69,7 @@ const OpenaiConfigHistorySchema = CollectionSchema(
   getId: _openaiConfigHistoryGetId,
   getLinks: _openaiConfigHistoryGetLinks,
   attach: _openaiConfigHistoryAttach,
-  version: '3.1.7',
+  version: '3.1.8',
 );
 
 int _openaiConfigHistoryEstimateSize(

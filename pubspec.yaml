@@ -18,10 +18,10 @@ dependencies:
   flutter_radar_chart: ^0.2.1
   flutter_riverpod: ^2.5.1
   isar: 
-    version: 3.1.7
+    version: 3.1.8
     hosted: https://pub.isar-community.dev/
   isar_flutter_libs: 
-    version: 3.1.7
+    version: 3.1.8
     hosted: https://pub.isar-community.dev/
   json_annotation: ^4.9.0
   langchain_lib:
@@ -41,7 +41,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   isar_generator: 
-    version: 3.1.7
+    version: 3.1.8
     hosted: https://pub.isar-community.dev/
   json_serializable: ^6.8.0
   package_rename: ^1.6.0   # dart run package_rename

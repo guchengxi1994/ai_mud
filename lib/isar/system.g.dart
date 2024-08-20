@@ -77,7 +77,7 @@ const SystemSchema = CollectionSchema(
   getId: _systemGetId,
   getLinks: _systemGetLinks,
   attach: _systemAttach,
-  version: '3.1.7',
+  version: '3.1.8',
 );
 
 int _systemEstimateSize(
