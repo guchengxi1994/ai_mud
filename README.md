@@ -8,10 +8,14 @@ a mud game built with flutter and LLM
 
 * 0.3.0 (WIP)
   - todo: store some ai responses to save tokens
+  
+* 0.2.1 (unreleased)
+  - feat: save `Event`
+  - todo: make AI response more diverse 
 
-* 0.2.0 (WIP)
-  - todo: store openai configs (WIP)
-  - todo: going to support mobiles (WIP)
+* 0.2.0 (unreleased)
+  - feat: store openai configs 
+  - feat: going to support mobiles 
   - fix: initial game month/period not correct bug
   - fix: `lastHistory` is null bug
 

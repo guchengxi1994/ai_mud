@@ -2,6 +2,7 @@ import 'package:ai_mud/common/utils.dart';
 import 'package:ai_mud/isar/chat_history.dart';
 import 'package:ai_mud/isar/openai_config_history.dart';
 import 'package:ai_mud/isar/player.dart';
+import 'package:ai_mud/isar/saved_event.dart';
 import 'package:ai_mud/isar/system.dart';
 import 'package:isar/isar.dart';
 
@@ -34,6 +35,7 @@ class IsarDatabase {
     PlayerSchema,
     SystemSchema,
     ChatHistorySchema,
-    OpenaiConfigHistorySchema
+    OpenaiConfigHistorySchema,
+    SavedEventSchema
   ];
 }
