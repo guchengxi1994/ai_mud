@@ -40,10 +40,10 @@ jobs:
 
       - name: Build android
         run: |
-          flutter build android -v --release
+          flutter build apk 
 
       - name: Set tag name
-        run: echo "tag_name=v$(cider version)" >> $env:GITHUB_ENV
+        run: echo "tag_name=v$(cider version)" >> $GITHUB_ENV
 
 
       - name: Publish release
