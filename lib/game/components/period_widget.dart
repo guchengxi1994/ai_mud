@@ -56,35 +56,20 @@ class PeriodWidgetState extends ConsumerState<PeriodWidget>
     _tenDayPeriodNotifier = ValueNotifier<String>("上旬");
   }
 
-  calculateYearMonthTenDay(int dayNumber) {
-    const int daysInYear = 36;
-    const int daysInMonth = 3;
+  calculateYearMonthPeriod(int input) {
+    final y = YearMonthPeriod.calculateYearMonthPeriod(input);
 
-    int year = (dayNumber - 1) ~/ daysInYear + 1;
-    int dayOfYear = (dayNumber - 1) % daysInYear + 1;
-    int month = (dayOfYear - 1) ~/ daysInMonth + 1;
-    int dayOfMonth = (dayOfYear - 1) % daysInMonth + 1;
-
-    String tenDayPeriod;
-    if (dayOfMonth == 1) {
-      tenDayPeriod = '上旬';
-    } else if (dayOfMonth == 2) {
-      tenDayPeriod = '中旬';
-    } else {
-      tenDayPeriod = '下旬';
-    }
-
-    if (_yearNotifier.value != year.toString()) {
-      _yearNotifier.value = year.toString();
+    if (_yearNotifier.value != y.year.toString()) {
+      _yearNotifier.value = y.year.toString();
       _yearController.forward(from: 0);
     }
 
-    if (_monthNotifier.value != month.toString()) {
-      _monthNotifier.value = month.toString();
+    if (_monthNotifier.value != y.month.toString()) {
+      _monthNotifier.value = y.month.toString();
       _monthController.forward(from: 0);
     }
 
-    _tenDayPeriodNotifier.value = tenDayPeriod;
+    _tenDayPeriodNotifier.value = y.period;
     _tenDayPeriodController.forward(from: 0);
   }
 
@@ -102,7 +87,7 @@ class PeriodWidgetState extends ConsumerState<PeriodWidget>
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       logger.info("period widget rebuild : $state");
-      calculateYearMonthTenDay(state);
+      calculateYearMonthPeriod(state + 1);
     });
 
     return Material(
@@ -162,6 +147,10 @@ class PeriodWidgetState extends ConsumerState<PeriodWidget>
                             child: Text(v));
                       });
                 }),
+            const Padding(
+              padding: EdgeInsets.only(right: 10),
+              child: Text("旬"),
+            ),
           ],
         ),
       ),

@@ -25,7 +25,7 @@ class SystemState {
       {this.type = "",
       this.worldSetting = "",
       this.systemId = -1,
-      this.historyLength = 1});
+      this.historyLength = 0});
 
   SystemState copyWith({
     String? type,
@@ -104,7 +104,7 @@ class SystemNotifier extends Notifier<SystemState> {
         type: last.type,
         worldSetting: last.worldSetting,
         systemId: last.id,
-        historyLength: last.history.length + 1,
+        historyLength: last.history.length,
       );
       return true;
     }
@@ -192,7 +192,7 @@ class SystemNotifier extends Notifier<SystemState> {
       return null;
     }
 
-    return YearMonthPeriod.calculateYearMonthPeriod(state.historyLength);
+    return YearMonthPeriod.calculateYearMonthPeriod(state.historyLength + 1);
   }
 
   Stream<ChatResult> generateWorld(

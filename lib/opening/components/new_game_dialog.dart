@@ -38,7 +38,7 @@ class NewGameDialog extends ConsumerWidget {
                                 .read(newGameProvider.notifier)
                                 .controller
                                 .text;
-                            if (name.isNotEmpty) {
+                            if (name.isEmpty) {
                               name = "张三";
                             }
                             ref

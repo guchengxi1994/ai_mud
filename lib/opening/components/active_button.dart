@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
 typedef OnTap = void Function(Object? o);
@@ -29,6 +30,7 @@ class _ActiveButtonState extends State<ActiveButton> {
   bool active = false;
 
   final double height = 50;
+  final AudioPlayer _audioPlayer = AudioPlayer();
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +60,8 @@ class _ActiveButtonState extends State<ActiveButton> {
       onTap: widget.enable ? () => widget.onTap(widget.content) : null,
       child: MouseRegion(
         onEnter: (event) {
+          _audioPlayer.play(AssetSource("audios/y1970.wav"), volume: 1);
+
           setState(() {
             active = true;
           });
