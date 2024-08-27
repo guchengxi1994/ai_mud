@@ -1,19 +1,21 @@
 import 'package:ai_mud/common/app_style.dart';
 import 'package:ai_mud/isar/database.dart';
 import 'package:ai_mud/isar/openai_config_history.dart';
+import 'package:ai_mud/opening/notifiers/form_notifier.dart' as n;
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class OpenaiConfigForm extends StatefulWidget {
+class OpenaiConfigForm extends ConsumerStatefulWidget {
   const OpenaiConfigForm({super.key, this.config});
   final OpenaiConfigHistory? config;
 
   @override
-  State<OpenaiConfigForm> createState() => _OpenaiConfigFormState();
+  ConsumerState<OpenaiConfigForm> createState() => _OpenaiConfigFormState();
 }
 
-class _OpenaiConfigFormState extends State<OpenaiConfigForm> {
+class _OpenaiConfigFormState extends ConsumerState<OpenaiConfigForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final IsarDatabase database = IsarDatabase();
 
@@ -37,6 +39,13 @@ class _OpenaiConfigFormState extends State<OpenaiConfigForm> {
       _modelController.text = widget.config!.model;
       _temperatureController.text = widget.config!.temperature.toString();
       _tagController.text = widget.config!.tag;
+    } else {
+      final state = ref.read(n.formNotifierProvider);
+      _apiKeyController.text = state.apiKey;
+      _apiBaseUrlController.text = state.baseUrl;
+      _modelController.text = state.model;
+      _temperatureController.text = state.temperature;
+      _tagController.text = state.tag;
     }
   }
 
@@ -99,6 +108,11 @@ class _OpenaiConfigFormState extends State<OpenaiConfigForm> {
                       onFieldSubmitted: (value) {
                         FocusScope.of(context).requestFocus(_apiBaseUrlFocus);
                       },
+                      onChanged: (value) {
+                        ref
+                            .read(n.formNotifierProvider.notifier)
+                            .updateApiKey(value);
+                      },
                       decoration: AppStyle.inputDecorationWithHintAndLabel(
                           "Input config Api key", "Api key"),
                       validator: (value) {
@@ -117,6 +131,11 @@ class _OpenaiConfigFormState extends State<OpenaiConfigForm> {
                       onFieldSubmitted: (value) {
                         FocusScope.of(context).requestFocus(_modelFocus);
                       },
+                      onChanged: (value) {
+                        ref
+                            .read(n.formNotifierProvider.notifier)
+                            .updateBaseUrl(value);
+                      },
                       decoration: AppStyle.inputDecorationWithHintAndLabel(
                           "Input config api base url", "Api base url"),
                       validator: (value) {
@@ -134,6 +153,11 @@ class _OpenaiConfigFormState extends State<OpenaiConfigForm> {
                       focusNode: _modelFocus,
                       onFieldSubmitted: (value) {
                         FocusScope.of(context).requestFocus(_temperatureFocus);
+                      },
+                      onChanged: (value) {
+                        ref
+                            .read(n.formNotifierProvider.notifier)
+                            .updateModel(value);
                       },
                       decoration: AppStyle.inputDecorationWithHintAndLabel(
                           "Input config model name", "Model"),
@@ -155,6 +179,11 @@ class _OpenaiConfigFormState extends State<OpenaiConfigForm> {
                         FocusScope.of(context)
                             .unfocus(); // Unfocus after last field
                       },
+                      onChanged: (value) {
+                        ref
+                            .read(n.formNotifierProvider.notifier)
+                            .updateTemperature(value);
+                      },
                       decoration: AppStyle.inputDecorationWithHintAndLabel(
                           "Input config temperature", "Temperature"),
                       validator: (value) {
@@ -174,6 +203,11 @@ class _OpenaiConfigFormState extends State<OpenaiConfigForm> {
                           enabled: false,
                           controller: _tagController,
                           onFieldSubmitted: (value) {},
+                          onChanged: (value) {
+                            ref
+                                .read(n.formNotifierProvider.notifier)
+                                .updateTag(value);
+                          },
                           decoration: AppStyle.inputDecorationWithHintAndLabel(
                               "Input config tag", "Tag"),
                           validator: (value) {

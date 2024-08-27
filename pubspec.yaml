@@ -2,7 +2,7 @@ name: ai_mud
 description: "a mud game built with flutter and LLM"
 publish_to: 'none' 
 
-version: 0.2.1
+version: 0.2.1+1-fix
 
 environment:
   sdk: '>=3.4.3 <4.0.0'

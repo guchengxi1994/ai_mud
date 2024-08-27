@@ -26,6 +26,10 @@ class AiClient {
       await database.isar!.writeTxn(() async {
         List<OpenaiConfigHistory> openais = [];
 
+        if (OpenaiClient.models == null) {
+          return;
+        }
+
         for (final i in OpenaiClient.models!.models) {
           openais.add(OpenaiConfigHistory()
             ..apiBaseUrl = i.llmBase

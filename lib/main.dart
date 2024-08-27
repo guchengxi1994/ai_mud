@@ -35,27 +35,27 @@ void main() async {
     await windowManager.setMaximizable(false);
     await windowManager.setMinimizable(false);
 
-    AudioUtils audioUtils = AudioUtils();
-    await audioUtils.setloop();
-    await audioUtils.playMainBgm();
-
-    AiClient aiClient = AiClient();
-    IsarDatabase database = IsarDatabase();
-    await database.initialDatabase();
-    await aiClient.initFromDatabase(database);
-
-    if (OpenaiClient.models == null) {
-      logger.info("load config from env");
-      aiClient.initOpenAi(DevUtils.env);
-    }
-
-    await aiClient.initSystemConfig(DevUtils.settings);
-
     windowManager.waitUntilReadyToShow(windowOptions, () async {
       await windowManager.show();
       await windowManager.focus();
     });
   }
+
+  AudioUtils audioUtils = AudioUtils();
+  await audioUtils.setloop();
+  await audioUtils.playMainBgm();
+
+  AiClient aiClient = AiClient();
+  IsarDatabase database = IsarDatabase();
+  await database.initialDatabase();
+  await aiClient.initFromDatabase(database);
+
+  if (OpenaiClient.models == null) {
+    logger.info("load config from env");
+    aiClient.initOpenAi(DevUtils.env);
+  }
+
+  await aiClient.initSystemConfig(DevUtils.settings);
 
   runApp(const ProviderScope(child: MyApp()));
 }

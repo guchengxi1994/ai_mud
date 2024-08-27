@@ -8,6 +8,9 @@ a mud game built with flutter and LLM
 
 * 0.3.0 (WIP)
   - todo: store some ai responses to save tokens
+
+* 0.2.1+1-fix
+  - fix: initial game openai config bug on mobiles
   
 * 0.2.1 (unreleased)
   - feat: save `Event`
