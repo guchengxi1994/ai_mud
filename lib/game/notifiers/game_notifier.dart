@@ -7,9 +7,11 @@ import 'package:ai_mud/global/system_notifier.dart';
 import 'package:ai_mud/isar/chat_history.dart';
 import 'package:ai_mud/isar/database.dart';
 import 'package:ai_mud/isar/player.dart';
+import 'package:ai_mud/isar/saved_event.dart';
 import 'package:ai_mud/isar/system.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:isar/isar.dart';
 import 'package:langchain_lib/langchain_lib.dart';
 // ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
@@ -96,9 +98,14 @@ class GameNotifier extends AutoDisposeNotifier<GameState> {
       ...userMessages,
       if (lastHistory != "")
         ChatMessage.humanText("注意：事件\"$lastHistory\"是上一个事件，请不要回答相同的事件。"),
-      ChatMessage.humanText(
-          "注意：以下事件已回答过，请不要重复回答！已经回答的事件清单如下： ${historyList.toString()}")
+      // ChatMessage.humanText(
+      //     "注意：以下事件已回答过，请不要重复回答！已经回答的事件清单如下： ${historyList.toString()}")
     ]);
+
+    final String humanText =
+        "${config.systemRole.reduce((s, s1) => "$s\n$s1")}\n\n玩家：$prompt${config.common.reduce((s, s1) => "$s\n$s1")}\n注意：事件\"$lastHistory\"是上一个事件，请不要回答相同的事件。";
+
+    saveHumanMessage(humanText);
 
     stream.listen((v) {
       state = state.copyWith(
@@ -108,8 +115,23 @@ class GameNotifier extends AutoDisposeNotifier<GameState> {
     }, onDone: () async {
       state = state.copyWith(conversationDone: true);
       saveChatHistory();
+      Event? e = state.toEvent();
+      if (e != null) {
+        SavedEvent savedEvent = SavedEvent.fromEvent(e);
+        savedEvent.age = ref.read(systemProvider).historyLength;
+        savedEvent.gameType = ref.read(systemProvider).type;
+        savedEvent.role = system.player.value!.role;
+        try {
+          await isarDatabase.isar!.writeTxn(() async {
+            await isarDatabase.isar!.savedEvents.put(savedEvent);
+          });
+        } on IsarError {
+          logger.info("save event error ====> index error");
+        } catch (_) {}
+      }
+
       if (onDone != null) {
-        onDone(state.toEvent());
+        onDone(e);
       }
     }, onError: (e) {
       state = state.copyWith(
@@ -168,6 +190,15 @@ class GameNotifier extends AutoDisposeNotifier<GameState> {
       ChatHistory chatHistory = ChatHistory()
         ..content = state.dialog
         ..tokenCount = state.token;
+      await isarDatabase.isar!.chatHistorys.put(chatHistory);
+    });
+  }
+
+  saveHumanMessage(String message) async {
+    await isarDatabase.isar!.writeTxn(() async {
+      ChatHistory chatHistory = ChatHistory()
+        ..content = message
+        ..tokenCount = 0;
       await isarDatabase.isar!.chatHistorys.put(chatHistory);
     });
   }
