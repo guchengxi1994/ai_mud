@@ -13,8 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:langchain_lib/langchain_lib.dart';
-// ignore: depend_on_referenced_packages
-import 'package:collection/collection.dart';
 
 class GameState {
   final String dialog;
@@ -33,7 +31,8 @@ class GameState {
 
   Event? toEvent() {
     try {
-      return Event.fromJson(jsonDecode(dialog));
+      final s = dialog.replaceAll("```json", "").replaceAll("```", "");
+      return Event.fromJson(jsonDecode(s));
     } catch (e) {
       return null;
     }
@@ -61,7 +60,6 @@ class GameNotifier extends AutoDisposeNotifier<GameState> {
 
   Future plot(System system, {OnDone? onDone}) async {
     state = state.copyWith(dialog: "", conversationDone: false);
-
     StringBuffer prompt = StringBuffer();
     prompt.writeln(system.prompt);
 
@@ -72,11 +70,6 @@ class GameNotifier extends AutoDisposeNotifier<GameState> {
     YearMonthPeriod? yearMonthPeriod =
         await ref.read(systemProvider.notifier).getCurrentAge();
     Set<String> history = await getHistory();
-
-    StringBuffer historyList = StringBuffer();
-    String lastHistory = await getLastHistory();
-
-    history.mapIndexed((i, v) => historyList.writeln("事件$i：$v"));
 
     prompt.writeln(
         "玩家的名字是${system.player.value!.name},今年${yearMonthPeriod?.year ?? 1}岁，身份是一个${system.player.value!.role}");
@@ -96,14 +89,11 @@ class GameNotifier extends AutoDisposeNotifier<GameState> {
       ...systemRoles,
       ChatMessage.humanText(prompt.toString()),
       ...userMessages,
-      if (lastHistory != "")
-        ChatMessage.humanText("注意：事件\"$lastHistory\"是上一个事件，请不要回答相同的事件。"),
-      // ChatMessage.humanText(
-      //     "注意：以下事件已回答过，请不要重复回答！已经回答的事件清单如下： ${historyList.toString()}")
+      ChatMessage.humanText("请确保事件名称和内容的唯一性，避免与历史事件 ${history.toString()} 重复。")
     ]);
 
     final String humanText =
-        "${config.systemRole.reduce((s, s1) => "$s\n$s1")}\n\n玩家：$prompt${config.common.reduce((s, s1) => "$s\n$s1")}\n注意：事件\"$lastHistory\"是上一个事件，请不要回答相同的事件。";
+        "${config.systemRole.reduce((s, s1) => "$s\n$s1")}\n\n玩家：$prompt${config.common.reduce((s, s1) => "$s\n$s1")}\n注意：请确保事件名称和内容的唯一性，避免与历史事件 ${history.toString()} 重复。";
 
     saveHumanMessage(humanText);
 
@@ -134,6 +124,7 @@ class GameNotifier extends AutoDisposeNotifier<GameState> {
         onDone(e);
       }
     }, onError: (e) {
+      logger.severe("plot error ====> $e");
       state = state.copyWith(
           dialog: state.dialog + e.toString(), conversationDone: true);
       controller.jumpTo(controller.position.maxScrollExtent);
