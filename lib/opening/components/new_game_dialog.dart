@@ -1,4 +1,5 @@
 import 'package:ai_mud/global/system_notifier.dart';
+import 'package:ai_mud/opening/components/new_game_aims_selection.dart';
 import 'package:ai_mud/opening/components/new_game_type_selection.dart';
 import 'package:ai_mud/opening/notifiers/new_game_notifier.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,7 @@ class NewGameDialog extends ConsumerWidget {
             children: const [
               NewGameTypeSelection(),
               NewGameRoleSelection(),
+              NewGameAimsSelection(),
               NewGameLastScreen()
             ],
           )),
@@ -38,7 +40,7 @@ class NewGameDialog extends ConsumerWidget {
                                 .read(newGameProvider.notifier)
                                 .controller
                                 .text;
-                            if (name.isNotEmpty) {
+                            if (name.isEmpty) {
                               name = "张三";
                             }
                             ref

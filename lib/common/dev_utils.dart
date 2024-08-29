@@ -8,6 +8,7 @@ class DevUtils {
 
   static String env = "${DevUtils.executableDir.path}/env.json";
   static String settings = "assets/settings/settings.json";
+  static String splash = "assets/settings/splash.json";
 
   static String readJson(String s) {
     return File(s).readAsStringSync();

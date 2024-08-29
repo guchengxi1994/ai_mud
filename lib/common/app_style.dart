@@ -66,4 +66,16 @@ class AppStyle {
         enabledBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Color.fromARGB(255, 159, 159, 159))));
   }
+
+  static const colorizeColors = [
+    Colors.purple,
+    Colors.blue,
+    Colors.yellow,
+    Colors.red,
+  ];
+
+  static const colorizeTextStyle = TextStyle(
+    fontSize: 50.0,
+    fontFamily: 'xing',
+  );
 }

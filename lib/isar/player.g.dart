@@ -29,18 +29,23 @@ const PlayerSchema = CollectionSchema(
       type: IsarType.objectList,
       target: r'Achievement',
     ),
-    r'maxAge': PropertySchema(
+    r'aim': PropertySchema(
       id: 2,
+      name: r'aim',
+      type: IsarType.string,
+    ),
+    r'maxAge': PropertySchema(
+      id: 3,
       name: r'maxAge',
       type: IsarType.long,
     ),
     r'name': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'name',
       type: IsarType.string,
     ),
     r'role': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'role',
       type: IsarType.string,
     )
@@ -79,6 +84,12 @@ int _playerEstimateSize(
       bytesCount += AchievementSchema.estimateSize(value, offsets, allOffsets);
     }
   }
+  {
+    final value = object.aim;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   bytesCount += 3 + object.name.length * 3;
   bytesCount += 3 + object.role.length * 3;
   return bytesCount;
@@ -102,9 +113,10 @@ void _playerSerialize(
     AchievementSchema.serialize,
     object.achievements,
   );
-  writer.writeLong(offsets[2], object.maxAge);
-  writer.writeString(offsets[3], object.name);
-  writer.writeString(offsets[4], object.role);
+  writer.writeString(offsets[2], object.aim);
+  writer.writeLong(offsets[3], object.maxAge);
+  writer.writeString(offsets[4], object.name);
+  writer.writeString(offsets[5], object.role);
 }
 
 Player _playerDeserialize(
@@ -127,10 +139,11 @@ Player _playerDeserialize(
         Achievement(),
       ) ??
       [];
+  object.aim = reader.readStringOrNull(offsets[2]);
   object.id = id;
-  object.maxAge = reader.readLong(offsets[2]);
-  object.name = reader.readString(offsets[3]);
-  object.role = reader.readString(offsets[4]);
+  object.maxAge = reader.readLong(offsets[3]);
+  object.name = reader.readString(offsets[4]);
+  object.role = reader.readString(offsets[5]);
   return object;
 }
 
@@ -157,10 +170,12 @@ P _playerDeserializeProp<P>(
           ) ??
           []) as P;
     case 2:
-      return (reader.readLong(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 3:
-      return (reader.readString(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 4:
+      return (reader.readString(offset)) as P;
+    case 5:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -338,6 +353,150 @@ extension PlayerQueryFilter on QueryBuilder<Player, Player, QFilterCondition> {
         upper,
         includeUpper,
       );
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterFilterCondition> aimIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'aim',
+      ));
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterFilterCondition> aimIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'aim',
+      ));
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterFilterCondition> aimEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'aim',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterFilterCondition> aimGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'aim',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterFilterCondition> aimLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'aim',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterFilterCondition> aimBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'aim',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterFilterCondition> aimStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'aim',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterFilterCondition> aimEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'aim',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterFilterCondition> aimContains(String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'aim',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterFilterCondition> aimMatches(String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'aim',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterFilterCondition> aimIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'aim',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterFilterCondition> aimIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'aim',
+        value: '',
+      ));
     });
   }
 
@@ -723,6 +882,18 @@ extension PlayerQueryObject on QueryBuilder<Player, Player, QFilterCondition> {
 extension PlayerQueryLinks on QueryBuilder<Player, Player, QFilterCondition> {}
 
 extension PlayerQuerySortBy on QueryBuilder<Player, Player, QSortBy> {
+  QueryBuilder<Player, Player, QAfterSortBy> sortByAim() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'aim', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterSortBy> sortByAimDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'aim', Sort.desc);
+    });
+  }
+
   QueryBuilder<Player, Player, QAfterSortBy> sortByMaxAge() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'maxAge', Sort.asc);
@@ -761,6 +932,18 @@ extension PlayerQuerySortBy on QueryBuilder<Player, Player, QSortBy> {
 }
 
 extension PlayerQuerySortThenBy on QueryBuilder<Player, Player, QSortThenBy> {
+  QueryBuilder<Player, Player, QAfterSortBy> thenByAim() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'aim', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Player, Player, QAfterSortBy> thenByAimDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'aim', Sort.desc);
+    });
+  }
+
   QueryBuilder<Player, Player, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -811,6 +994,13 @@ extension PlayerQuerySortThenBy on QueryBuilder<Player, Player, QSortThenBy> {
 }
 
 extension PlayerQueryWhereDistinct on QueryBuilder<Player, Player, QDistinct> {
+  QueryBuilder<Player, Player, QDistinct> distinctByAim(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'aim', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<Player, Player, QDistinct> distinctByMaxAge() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'maxAge');
@@ -849,6 +1039,12 @@ extension PlayerQueryProperty on QueryBuilder<Player, Player, QQueryProperty> {
       achievementsProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'achievements');
+    });
+  }
+
+  QueryBuilder<Player, String?, QQueryOperations> aimProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'aim');
     });
   }
 

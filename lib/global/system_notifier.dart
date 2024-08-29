@@ -25,7 +25,7 @@ class SystemState {
       {this.type = "",
       this.worldSetting = "",
       this.systemId = -1,
-      this.historyLength = 1});
+      this.historyLength = 0});
 
   SystemState copyWith({
     String? type,
@@ -104,7 +104,7 @@ class SystemNotifier extends Notifier<SystemState> {
         type: last.type,
         worldSetting: last.worldSetting,
         systemId: last.id,
-        historyLength: last.history.length + 1,
+        historyLength: last.history.length,
       );
       return true;
     }
@@ -119,7 +119,29 @@ class SystemNotifier extends Notifier<SystemState> {
         .findFirst())!;
   }
 
+  System getCurrentSync() {
+    return database.isar!.systems
+        .where()
+        .idEqualTo(state.systemId)
+        .findFirstSync()!;
+  }
+
+  bool couldMoveNext() {
+    final y = getCurrentAge();
+    if (y == null) {
+      return false;
+    }
+
+    final maxAge = getCurrentSync().player.value!.maxAge;
+
+    return y.year < maxAge;
+  }
+
   Future moveNext() async {
+    if (!couldMoveNext()) {
+      return;
+    }
+
     if (state.systemId == -1) {
       return;
     }
@@ -156,6 +178,7 @@ class SystemNotifier extends Notifier<SystemState> {
       ..maxAge = /* 随机的最大年龄，超过这个岁数游戏结束 */ random.nextInt(40) + 30;
 
     player.ability += PlayerAbility.getRandom();
+    player.aim = newGameConfig.aim;
 
     System system = System()
       ..type = newGameConfig.worldType
@@ -177,22 +200,28 @@ class SystemNotifier extends Notifier<SystemState> {
     );
   }
 
+  changePlayerMaxAge(int a) async {
+    final system = await getCurrent();
+    system.player.value!.maxAge = system.player.value!.maxAge + a;
+    await database.isar!.writeTxn(() async {
+      await database.isar!.players.put(system.player.value!);
+    });
+  }
+
   Future<PlayerAbility> getAbility() async {
-    return (await database.isar!.players.where().findFirst())?.ability ??
-        PlayerAbility();
+    return (await getCurrent()).player.value?.ability ?? PlayerAbility();
   }
 
   PlayerAbility getAbilitySync() {
-    return (database.isar!.players.where().findFirstSync())?.ability ??
-        PlayerAbility();
+    return getCurrentSync().player.value?.ability ?? PlayerAbility();
   }
 
-  Future<YearMonthPeriod?> getCurrentAge() async {
+  YearMonthPeriod? getCurrentAge() {
     if (state.systemId == -1) {
       return null;
     }
 
-    return YearMonthPeriod.calculateYearMonthPeriod(state.historyLength);
+    return YearMonthPeriod.calculateYearMonthPeriod(state.historyLength + 1);
   }
 
   Stream<ChatResult> generateWorld(

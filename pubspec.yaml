@@ -2,12 +2,13 @@ name: ai_mud
 description: "a mud game built with flutter and LLM"
 publish_to: 'none' 
 
-version: 0.2.1
+version: 0.2.3
 
 environment:
   sdk: '>=3.4.3 <4.0.0'
 
 dependencies:
+  animated_text_kit: ^4.2.2
   audioplayers: ^6.0.0
   auto_size_text: ^3.0.0
   blur: ^4.0.0
@@ -53,6 +54,12 @@ flutter:
     - assets/audios/
     - assets/images/
     - assets/settings/settings.json
+    - assets/settings/splash.json
+
+  fonts:
+    - family: xing
+      fonts:
+        - asset: assets/fonts/WeiNiZhuYiLangManXingShu-2.ttf
 
 flutter_launcher_icons:   # flutter pub run flutter_launcher_icons
   android: "launcher_icon"

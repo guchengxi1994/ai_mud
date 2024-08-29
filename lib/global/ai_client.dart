@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:ai_mud/global/system.dart';
 import 'package:ai_mud/isar/database.dart';
 import 'package:ai_mud/isar/openai_config_history.dart';
+import 'package:ai_mud/splash/splash_model.dart';
 import 'package:isar/isar.dart';
 import 'package:langchain_lib/langchain_lib.dart';
 
@@ -16,6 +17,7 @@ class AiClient {
   factory AiClient() => _instance;
 
   late SystemConfig systemConfig;
+  late SplashModel splashModel;
 
   initOpenAi(String path) {
     OpenaiClient.fromEnv(path);
@@ -25,6 +27,10 @@ class AiClient {
 
       await database.isar!.writeTxn(() async {
         List<OpenaiConfigHistory> openais = [];
+
+        if (OpenaiClient.models == null) {
+          return;
+        }
 
         for (final i in OpenaiClient.models!.models) {
           openais.add(OpenaiConfigHistory()
@@ -58,6 +64,10 @@ class AiClient {
 
   Future initSystemConfig(String path) async {
     systemConfig = await SystemConfig.fromAsset(path);
+  }
+
+  Future initSplash(String path) async {
+    splashModel = await SplashModel.fromAsset(path);
   }
 
   Stream<ChatResult> stream(List<ChatMessage> history,
