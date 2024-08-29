@@ -16,6 +16,7 @@ class Player {
   late String name;
   late String role;
   late int maxAge;
+  late String? aim = "活着";
 
   late PlayerAbility ability = PlayerAbility();
 

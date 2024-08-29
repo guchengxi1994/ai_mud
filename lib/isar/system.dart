@@ -21,9 +21,6 @@ class System {
 
   IsarLink<Player> player = IsarLink<Player>();
 
-  /// 减少prompt token使用量
-  late String historySummary = "";
-
   String _prompt() {
     StringBuffer sb = StringBuffer();
     sb.writeln("这是一款$type类型的游戏。");

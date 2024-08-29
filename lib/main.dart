@@ -56,6 +56,7 @@ void main() async {
   }
 
   await aiClient.initSystemConfig(DevUtils.settings);
+  await aiClient.initSplash(DevUtils.splash);
 
   runApp(const ProviderScope(child: MyApp()));
 }

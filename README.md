@@ -9,6 +9,9 @@ a mud game built with flutter and LLM
 * 0.3.0 (WIP)
   - todo: store some ai responses to save tokens
 
+* 0.2.2 (unreleased)
+  - feat: add SplashScreen
+
 * 0.2.1+2
   - fix: player name bug
   - fix: initial game month/period not correct bug

@@ -156,6 +156,7 @@ class SystemNotifier extends Notifier<SystemState> {
       ..maxAge = /* 随机的最大年龄，超过这个岁数游戏结束 */ random.nextInt(40) + 30;
 
     player.ability += PlayerAbility.getRandom();
+    player.aim = newGameConfig.aim;
 
     System system = System()
       ..type = newGameConfig.worldType

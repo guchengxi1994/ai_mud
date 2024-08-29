@@ -72,7 +72,7 @@ class GameNotifier extends AutoDisposeNotifier<GameState> {
     Set<String> history = await getHistory();
 
     prompt.writeln(
-        "玩家的名字是${system.player.value!.name},今年${yearMonthPeriod?.year ?? 1}岁，身份是一个${system.player.value!.role}");
+        "玩家的名字是${system.player.value!.name},今年${yearMonthPeriod?.year ?? 1}岁，身份是一个${system.player.value!.role},游戏中的目的是${system.player.value!.aim ?? "努力活着"}");
 
     List<SystemChatMessage> systemRoles = [];
 

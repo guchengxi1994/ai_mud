@@ -38,23 +38,18 @@ const SystemSchema = CollectionSchema(
       type: IsarType.objectList,
       target: r'History',
     ),
-    r'historySummary': PropertySchema(
-      id: 4,
-      name: r'historySummary',
-      type: IsarType.string,
-    ),
     r'prompt': PropertySchema(
-      id: 5,
+      id: 4,
       name: r'prompt',
       type: IsarType.string,
     ),
     r'type': PropertySchema(
-      id: 6,
+      id: 5,
       name: r'type',
       type: IsarType.string,
     ),
     r'worldSetting': PropertySchema(
-      id: 7,
+      id: 6,
       name: r'worldSetting',
       type: IsarType.string,
     )
@@ -101,7 +96,6 @@ int _systemEstimateSize(
       bytesCount += HistorySchema.estimateSize(value, offsets, allOffsets);
     }
   }
-  bytesCount += 3 + object.historySummary.length * 3;
   bytesCount += 3 + object.prompt.length * 3;
   bytesCount += 3 + object.type.length * 3;
   bytesCount += 3 + object.worldSetting.length * 3;
@@ -123,10 +117,9 @@ void _systemSerialize(
     HistorySchema.serialize,
     object.history,
   );
-  writer.writeString(offsets[4], object.historySummary);
-  writer.writeString(offsets[5], object.prompt);
-  writer.writeString(offsets[6], object.type);
-  writer.writeString(offsets[7], object.worldSetting);
+  writer.writeString(offsets[4], object.prompt);
+  writer.writeString(offsets[5], object.type);
+  writer.writeString(offsets[6], object.worldSetting);
 }
 
 System _systemDeserialize(
@@ -146,10 +139,9 @@ System _systemDeserialize(
         History(),
       ) ??
       [];
-  object.historySummary = reader.readString(offsets[4]);
   object.id = id;
-  object.type = reader.readString(offsets[6]);
-  object.worldSetting = reader.readString(offsets[7]);
+  object.type = reader.readString(offsets[5]);
+  object.worldSetting = reader.readString(offsets[6]);
   return object;
 }
 
@@ -179,8 +171,6 @@ P _systemDeserializeProp<P>(
     case 5:
       return (reader.readString(offset)) as P;
     case 6:
-      return (reader.readString(offset)) as P;
-    case 7:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -635,137 +625,6 @@ extension SystemQueryFilter on QueryBuilder<System, System, QFilterCondition> {
         upper,
         includeUpper,
       );
-    });
-  }
-
-  QueryBuilder<System, System, QAfterFilterCondition> historySummaryEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'historySummary',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<System, System, QAfterFilterCondition> historySummaryGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'historySummary',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<System, System, QAfterFilterCondition> historySummaryLessThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'historySummary',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<System, System, QAfterFilterCondition> historySummaryBetween(
-    String lower,
-    String upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'historySummary',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<System, System, QAfterFilterCondition> historySummaryStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'historySummary',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<System, System, QAfterFilterCondition> historySummaryEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'historySummary',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<System, System, QAfterFilterCondition> historySummaryContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'historySummary',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<System, System, QAfterFilterCondition> historySummaryMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'historySummary',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<System, System, QAfterFilterCondition> historySummaryIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'historySummary',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<System, System, QAfterFilterCondition>
-      historySummaryIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'historySummary',
-        value: '',
-      ));
     });
   }
 
@@ -1260,18 +1119,6 @@ extension SystemQuerySortBy on QueryBuilder<System, System, QSortBy> {
     });
   }
 
-  QueryBuilder<System, System, QAfterSortBy> sortByHistorySummary() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'historySummary', Sort.asc);
-    });
-  }
-
-  QueryBuilder<System, System, QAfterSortBy> sortByHistorySummaryDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'historySummary', Sort.desc);
-    });
-  }
-
   QueryBuilder<System, System, QAfterSortBy> sortByPrompt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'prompt', Sort.asc);
@@ -1331,18 +1178,6 @@ extension SystemQuerySortThenBy on QueryBuilder<System, System, QSortThenBy> {
   QueryBuilder<System, System, QAfterSortBy> thenByHintShownDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'hintShown', Sort.desc);
-    });
-  }
-
-  QueryBuilder<System, System, QAfterSortBy> thenByHistorySummary() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'historySummary', Sort.asc);
-    });
-  }
-
-  QueryBuilder<System, System, QAfterSortBy> thenByHistorySummaryDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'historySummary', Sort.desc);
     });
   }
 
@@ -1414,14 +1249,6 @@ extension SystemQueryWhereDistinct on QueryBuilder<System, System, QDistinct> {
     });
   }
 
-  QueryBuilder<System, System, QDistinct> distinctByHistorySummary(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'historySummary',
-          caseSensitive: caseSensitive);
-    });
-  }
-
   QueryBuilder<System, System, QDistinct> distinctByPrompt(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1472,12 +1299,6 @@ extension SystemQueryProperty on QueryBuilder<System, System, QQueryProperty> {
   QueryBuilder<System, List<History>, QQueryOperations> historyProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'history');
-    });
-  }
-
-  QueryBuilder<System, String, QQueryOperations> historySummaryProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'historySummary');
     });
   }
 

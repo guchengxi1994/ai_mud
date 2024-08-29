@@ -7,13 +7,15 @@ class NewGameState {
   final String worldOption;
   final String playerRole;
   final String playerName;
+  final String aim;
 
   NewGameState(
       {this.worldType = "",
       this.worldOption = "",
       this.playerRole = "",
       this.worldSetting = "",
-      this.playerName = "张三"});
+      this.playerName = "张三",
+      this.aim = ""});
 
   NewGameState copyWith({
     String? worldType,
@@ -21,6 +23,7 @@ class NewGameState {
     String? worldOption,
     String? playerRole,
     String? playerName,
+    String? aim,
   }) {
     return NewGameState(
       worldType: worldType ?? this.worldType,
@@ -28,6 +31,7 @@ class NewGameState {
       worldOption: worldOption ?? this.worldOption,
       playerRole: playerRole ?? this.playerRole,
       playerName: playerName ?? this.playerName,
+      aim: aim ?? this.aim,
     );
   }
 }
@@ -62,6 +66,10 @@ class NewGameNotifier extends AutoDisposeNotifier<NewGameState> {
     state = state.copyWith(playerName: name);
   }
 
+  void changeAim(String aim) {
+    state = state.copyWith(aim: aim);
+  }
+
   jumpTo(int index) {
     pageController.jumpToPage(index);
   }
@@ -70,7 +78,9 @@ class NewGameNotifier extends AutoDisposeNotifier<NewGameState> {
       state.worldType.isNotEmpty &&
       state.worldSetting.isNotEmpty &&
       state.worldOption.isNotEmpty &&
-      state.playerRole.isNotEmpty;
+      state.playerRole.isNotEmpty &&
+      state.playerName.isNotEmpty &&
+      state.aim.isNotEmpty;
 }
 
 final newGameProvider =
