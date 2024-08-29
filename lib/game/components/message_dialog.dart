@@ -1,3 +1,4 @@
+import 'package:ai_mud/common/app_style.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 
@@ -22,8 +23,8 @@ class MessageDialog extends StatelessWidget {
           child: AnimatedTextKit(animatedTexts: [
             ColorizeAnimatedText(
               message,
-              textStyle: _colorizeTextStyle,
-              colors: _colorizeColors,
+              textStyle: AppStyle.colorizeTextStyle,
+              colors: AppStyle.colorizeColors,
             ),
           ]),
         ),
@@ -31,15 +32,3 @@ class MessageDialog extends StatelessWidget {
     );
   }
 }
-
-const _colorizeColors = [
-  Colors.purple,
-  Colors.blue,
-  Colors.yellow,
-  Colors.red,
-];
-
-const _colorizeTextStyle = TextStyle(
-  fontSize: 50.0,
-  fontFamily: 'xing',
-);

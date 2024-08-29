@@ -1,5 +1,9 @@
+import 'dart:math';
+
+import 'package:ai_mud/game/components/good_bad_luck_dialog.dart';
 import 'package:ai_mud/game/models/event.dart';
 import 'package:ai_mud/game/notifiers/game_notifier.dart';
+import 'package:ai_mud/global/ai_client.dart';
 import 'package:ai_mud/global/system_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,7 +22,49 @@ class EventBoardState extends ConsumerState<EventBoard> {
     super.initState();
   }
 
+  final random = Random();
+  final settings = AiClient().systemConfig.gameSettings;
+
   plot() async {
+    if (!ref.read(systemProvider.notifier).couldMoveNext()) {
+      return;
+    }
+
+    int r = random.nextInt(100);
+
+    int goodLuck = (settings.goodLuck * 100).ceil();
+    int badLuck = 100 - (settings.badLuck * 100).ceil();
+
+    if (r <= goodLuck) {
+      ref.read(systemProvider.notifier).changePlayerMaxAge(5);
+      showGeneralDialog(
+          context: context,
+          barrierColor: Colors.transparent,
+          barrierDismissible: true,
+          barrierLabel: "good",
+          pageBuilder: (c, _, __) {
+            return const Center(
+              child: GoodBadLuckDialog(
+                isGoodLuck: true,
+              ),
+            );
+          });
+    } else if (r >= badLuck) {
+      ref.read(systemProvider.notifier).changePlayerMaxAge(-5);
+      showGeneralDialog(
+          context: context,
+          barrierColor: Colors.transparent,
+          barrierDismissible: true,
+          barrierLabel: "bad",
+          pageBuilder: (c, _, __) {
+            return const Center(
+              child: GoodBadLuckDialog(
+                isGoodLuck: false,
+              ),
+            );
+          });
+    }
+
     ref.read(gameProvider.notifier).plot(
       await ref.read(systemProvider.notifier).getCurrent(),
       onDone: (event) {
@@ -50,37 +96,51 @@ class EventBoardState extends ConsumerState<EventBoard> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Column(
-          children: [
-            Expanded(
-                child: e == null
-                    ? SingleChildScrollView(
-                        controller: ref.read(gameProvider.notifier).controller,
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: MarkdownBlock(
-                            data: state.dialog,
-                            selectable: false,
-                            config: MarkdownConfig.defaultConfig,
+        child: Builder(builder: (c) {
+          if (!ref.read(systemProvider.notifier).couldMoveNext()) {
+            return const Center(
+              child: SizedBox(
+                child: Text(
+                  "Game is over",
+                  style: TextStyle(fontSize: 40, fontFamily: "xing"),
+                ),
+              ),
+            );
+          }
+
+          return Column(
+            children: [
+              Expanded(
+                  child: e == null
+                      ? SingleChildScrollView(
+                          controller:
+                              ref.read(gameProvider.notifier).controller,
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: MarkdownBlock(
+                              data: state.dialog,
+                              selectable: false,
+                              config: MarkdownConfig.defaultConfig,
+                            ),
                           ),
-                        ),
-                      )
-                    : buildEvent()),
-            SizedBox(
-              height: 50,
-              child: ElevatedButton(
-                  onPressed: state.conversationDone
-                      ? () {
-                          setState(() {
-                            e = null;
-                          });
-                          plot();
-                        }
-                      : null,
-                  child: const Text("重试一次")),
-            )
-          ],
-        ),
+                        )
+                      : buildEvent()),
+              SizedBox(
+                height: 50,
+                child: ElevatedButton(
+                    onPressed: state.conversationDone
+                        ? () {
+                            setState(() {
+                              e = null;
+                            });
+                            plot();
+                          }
+                        : null,
+                    child: const Text("重试一次")),
+              )
+            ],
+          );
+        }),
       ),
     );
   }

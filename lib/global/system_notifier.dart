@@ -200,6 +200,14 @@ class SystemNotifier extends Notifier<SystemState> {
     );
   }
 
+  changePlayerMaxAge(int a) async {
+    final system = await getCurrent();
+    system.player.value!.maxAge = system.player.value!.maxAge + a;
+    await database.isar!.writeTxn(() async {
+      await database.isar!.players.put(system.player.value!);
+    });
+  }
+
   Future<PlayerAbility> getAbility() async {
     return (await getCurrent()).player.value?.ability ?? PlayerAbility();
   }
