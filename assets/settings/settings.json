@@ -53,6 +53,8 @@
         "good-luck": 0.01,
         "bad-luck": 0.05,
         "good-luck-message": "天赐良机",
-        "bad-luck-message": "时运不济"
+        "bad-luck-message": "时运不济",
+        "good-ending":"恭喜你，你获得了胜利！",
+        "bad-ending":"很遗憾，你输了。"
     }
 }

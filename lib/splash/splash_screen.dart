@@ -91,7 +91,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 left: 10,
                 bottom: 10,
                 child: AutoSizeText(
-                  "A game powered by Ai, created by xiaoshuyui",
+                  "A game powered by AI, created by xiaoshuyui",
                   maxLines: 1,
                   style: TextStyle(fontFamily: 'xing', fontSize: 25),
                 ))

@@ -71,11 +71,19 @@ class GameSettings {
   @JsonKey(name: "bad-luck-message")
   final String badLuckMessage;
 
+  @JsonKey(name: "good-ending")
+  final String goodEnding;
+
+  @JsonKey(name: "bad-ending")
+  final String badEnding;
+
   GameSettings(
       {required this.goodLuck,
       required this.badLuck,
       required this.goodLuckMessage,
-      required this.badLuckMessage});
+      required this.badLuckMessage,
+      required this.goodEnding,
+      required this.badEnding});
 
   factory GameSettings.fromJson(Map<String, dynamic> json) =>
       _$GameSettingsFromJson(json);

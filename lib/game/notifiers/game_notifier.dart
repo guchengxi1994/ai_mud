@@ -68,7 +68,7 @@ class GameNotifier extends AutoDisposeNotifier<GameState> {
     }
 
     YearMonthPeriod? yearMonthPeriod =
-        await ref.read(systemProvider.notifier).getCurrentAge();
+        ref.read(systemProvider.notifier).getCurrentAge();
     Set<String> history = await getHistory();
 
     prompt.writeln(

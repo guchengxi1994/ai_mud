@@ -119,7 +119,29 @@ class SystemNotifier extends Notifier<SystemState> {
         .findFirst())!;
   }
 
+  System getCurrentSync() {
+    return database.isar!.systems
+        .where()
+        .idEqualTo(state.systemId)
+        .findFirstSync()!;
+  }
+
+  bool couldMoveNext() {
+    final y = getCurrentAge();
+    if (y == null) {
+      return false;
+    }
+
+    final maxAge = getCurrentSync().player.value!.maxAge;
+
+    return y.year < maxAge;
+  }
+
   Future moveNext() async {
+    if (!couldMoveNext()) {
+      return;
+    }
+
     if (state.systemId == -1) {
       return;
     }
@@ -179,16 +201,14 @@ class SystemNotifier extends Notifier<SystemState> {
   }
 
   Future<PlayerAbility> getAbility() async {
-    return (await database.isar!.players.where().findFirst())?.ability ??
-        PlayerAbility();
+    return (await getCurrent()).player.value?.ability ?? PlayerAbility();
   }
 
   PlayerAbility getAbilitySync() {
-    return (database.isar!.players.where().findFirstSync())?.ability ??
-        PlayerAbility();
+    return getCurrentSync().player.value?.ability ?? PlayerAbility();
   }
 
-  Future<YearMonthPeriod?> getCurrentAge() async {
+  YearMonthPeriod? getCurrentAge() {
     if (state.systemId == -1) {
       return null;
     }

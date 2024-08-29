@@ -47,6 +47,8 @@ GameSettings _$GameSettingsFromJson(Map<String, dynamic> json) => GameSettings(
       badLuck: (json['bad-luck'] as num).toDouble(),
       goodLuckMessage: json['good-luck-message'] as String,
       badLuckMessage: json['bad-luck-message'] as String,
+      goodEnding: json['good-ending'] as String,
+      badEnding: json['bad-ending'] as String,
     );
 
 Map<String, dynamic> _$GameSettingsToJson(GameSettings instance) =>
@@ -55,4 +57,6 @@ Map<String, dynamic> _$GameSettingsToJson(GameSettings instance) =>
       'bad-luck': instance.badLuck,
       'good-luck-message': instance.goodLuckMessage,
       'bad-luck-message': instance.badLuckMessage,
+      'good-ending': instance.goodEnding,
+      'bad-ending': instance.badEnding,
     };

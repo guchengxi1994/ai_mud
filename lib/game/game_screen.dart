@@ -1,6 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:ai_mud/game/components/message_dialog.dart';
 import 'package:ai_mud/game/components/period_widget.dart';
+import 'package:ai_mud/global/ai_client.dart';
 import 'package:ai_mud/global/system_notifier.dart';
 import 'package:ai_mud/isar/player.dart';
 import 'package:ai_mud/settings/settings_screen_router.dart';
@@ -25,10 +27,29 @@ class _GameScreenState extends ConsumerState<GameScreen> {
   final GlobalKey _settingsKey = GlobalKey();
   final GlobalKey _daysKey = GlobalKey();
 
+  final systemSettings = AiClient().systemConfig.gameSettings;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!ref.read(systemProvider.notifier).couldMoveNext()) {
+        showGeneralDialog(
+            context: context,
+            barrierColor: Colors.transparent,
+            barrierDismissible: true,
+            barrierLabel: "finish",
+            pageBuilder: (c, _, __) {
+              return Center(
+                child: MessageDialog(
+                  message: systemSettings.badEnding,
+                ),
+              );
+            });
+
+        return;
+      }
+
       bool show = await ref.read(systemProvider.notifier).getHintShown();
 
       if (!show) {
