@@ -46,12 +46,15 @@ class Game {
   final List<String> options;
   final List<String> roles;
   final List<String> aims;
+  @JsonKey(name: "special-events")
+  final List<SpecialEvent> specialEvents;
 
   Game(
       {required this.type,
       required this.options,
       required this.roles,
-      required this.aims});
+      required this.aims,
+      required this.specialEvents});
 
   factory Game.fromJson(Map<String, dynamic> json) => _$GameFromJson(json);
 
@@ -60,6 +63,9 @@ class Game {
 
 @JsonSerializable()
 class GameSettings {
+  @JsonKey(name: "special-event-probability")
+  final double specialEventProbability;
+
   @JsonKey(name: "good-luck")
   final double goodLuck;
   @JsonKey(name: "bad-luck")
@@ -83,10 +89,37 @@ class GameSettings {
       required this.goodLuckMessage,
       required this.badLuckMessage,
       required this.goodEnding,
-      required this.badEnding});
+      required this.badEnding,
+      required this.specialEventProbability});
 
   factory GameSettings.fromJson(Map<String, dynamic> json) =>
       _$GameSettingsFromJson(json);
 
   Map<String, dynamic> toJson() => _$GameSettingsToJson(this);
+}
+
+@JsonSerializable()
+class SpecialEvent {
+  @JsonKey(name: "event-name")
+  final String eventName;
+
+  @JsonKey(name: "conditions")
+  final String conditions;
+
+  @JsonKey(name: "if-satisfied")
+  final String ifSatisfied;
+
+  @JsonKey(name: "if-not-satisfied")
+  final String ifNotSatisfied;
+
+  SpecialEvent(
+      {required this.eventName,
+      required this.conditions,
+      required this.ifSatisfied,
+      required this.ifNotSatisfied});
+
+  factory SpecialEvent.fromJson(Map<String, dynamic> json) =>
+      _$SpecialEventFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SpecialEventToJson(this);
 }

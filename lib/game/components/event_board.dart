@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:ai_mud/game/components/good_bad_luck_dialog.dart';
+import 'package:ai_mud/game/components/special_event_dialog.dart';
 import 'package:ai_mud/game/models/event.dart';
 import 'package:ai_mud/game/notifiers/game_notifier.dart';
 import 'package:ai_mud/global/ai_client.dart';
@@ -60,6 +61,37 @@ class EventBoardState extends ConsumerState<EventBoard> {
             return const Center(
               child: GoodBadLuckDialog(
                 isGoodLuck: false,
+              ),
+            );
+          });
+    }
+
+    /// special event
+    r = random.nextInt(100);
+    int special = (settings.specialEventProbability * 100).ceil();
+    if (r <= special) {
+      final e = AiClient()
+          .systemConfig
+          .games
+          .firstWhere((element) => element.type == "special")
+          .specialEvents;
+
+      int index = r % e.length;
+      final event = e[index];
+
+      final ability = ref.read(systemProvider.notifier).getAbilitySync();
+
+      showGeneralDialog(
+          // ignore: use_build_context_synchronously
+          context: context,
+          barrierColor: Colors.transparent,
+          barrierDismissible: true,
+          barrierLabel: "special",
+          pageBuilder: (c, _, __) {
+            return Center(
+              child: SpecialEventDialog(
+                eventName: event.eventName,
+                satisfied: ability.satisfied(event.conditions),
               ),
             );
           });

@@ -16,6 +16,20 @@
             "aims": [
                 "称霸天下",
                 "活着"
+            ],
+            "special-events":[
+                {
+                    "event-name":"",
+                    "conditions":"",
+                    "if-satisfied":"",
+                    "if-not-satisfied":""
+                },
+                {
+                    "event-name":"",
+                    "conditions":"",
+                    "if-satisfied":"",
+                    "if-not-satisfied":""
+                }
             ]
         },
         {
@@ -37,6 +51,20 @@
             "aims": [
                 "活着",
                 "找寻生命的意义"
+            ],
+            "special-events":[
+                {
+                    "event-name":"",
+                    "conditions":"",
+                    "if-satisfied":"",
+                    "if-not-satisfied":""
+                },
+                {
+                    "event-name":"",
+                    "conditions":"",
+                    "if-satisfied":"",
+                    "if-not-satisfied":""
+                }
             ]
         }
     ],
@@ -50,6 +78,7 @@
         "事件需要考虑玩家年龄，确保事件的复杂性和可操作性符合玩家的年龄段。"
     ],
     "game-settings": {
+        "special-event-probability": 0.05,
         "good-luck": 0.01,
         "bad-luck": 0.05,
         "good-luck-message": "天赐良机",

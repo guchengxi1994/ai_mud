@@ -9,6 +9,9 @@ a mud game built with flutter and LLM
 * 0.3.0 (WIP)
   - todo: store some ai responses to save tokens
 
+* 0.2.4 (unreleased,untested)
+  - feat: add special events
+
 * 0.2.3
   - feat: player age
 

@@ -10,6 +10,8 @@ import 'package:collection/collection.dart';
 
 part 'player.g.dart';
 
+RegExp regex = RegExp(r'(\w+)([<>=]+)(-?\d+)');
+
 @collection
 class Player {
   Id id = Isar.autoIncrement;
@@ -120,6 +122,149 @@ class PlayerAbility {
           break;
         case "Int":
           result.intelligence = value;
+          break;
+      }
+    }
+
+    return result;
+  }
+
+  bool satisfied(String s) {
+    if (s.trim().isEmpty) {
+      return true;
+    }
+
+    bool result = true;
+    List<String> expressions = s.split(';');
+    for (final i in expressions) {
+      var match = regex.firstMatch(i);
+      if (match == null) {
+        continue;
+      }
+
+      String variable = match.group(1)!;
+      String operator = match.group(2)!;
+      int value = int.parse(match.group(3)!);
+
+      switch (variable) {
+        case "End":
+          switch (operator) {
+            case ">=":
+              result = endurance >= value;
+              break;
+            case "<=":
+              result = endurance <= value;
+              break;
+            case "==":
+              result = endurance == value;
+              break;
+            case '<':
+              result = endurance < value;
+              break;
+            case '>':
+              result = endurance > value;
+              break;
+            default:
+              break;
+          }
+        case "Vit":
+          switch (operator) {
+            case ">=":
+              result = vitality >= value;
+              break;
+            case "<=":
+              result = vitality <= value;
+              break;
+            case "==":
+              result = vitality == value;
+              break;
+            case '<':
+              result = vitality < value;
+              break;
+            case '>':
+              result = vitality > value;
+          }
+        case "Att":
+          switch (operator) {
+            case ">=":
+              result = attunement >= value;
+              break;
+            case "<=":
+              result = attunement <= value;
+              break;
+            case "==":
+              result = attunement == value;
+              break;
+            case '<':
+              result = attunement < value;
+              break;
+            case '>':
+              result = attunement > value;
+              break;
+            default:
+              break;
+          }
+        case "Str":
+          switch (operator) {
+            case ">=":
+              result = strength >= value;
+              break;
+            case "<=":
+              result = strength <= value;
+              break;
+            case "==":
+              result = strength == value;
+              break;
+            case '<':
+              result = strength < value;
+              break;
+            case '>':
+              result = strength > value;
+              break;
+            default:
+              break;
+          }
+        case "Dex":
+          switch (operator) {
+            case ">=":
+              result = dexterity >= value;
+              break;
+            case "<=":
+              result = dexterity <= value;
+              break;
+            case "==":
+              result = dexterity == value;
+              break;
+            case '<':
+              result = dexterity < value;
+              break;
+            case '>':
+              result = dexterity > value;
+              break;
+            default:
+              break;
+          }
+        case "Int":
+          switch (operator) {
+            case ">=":
+              result = intelligence >= value;
+              break;
+            case "<=":
+              result = intelligence <= value;
+              break;
+            case "==":
+              result = intelligence == value;
+              break;
+            case '<':
+              result = intelligence < value;
+              break;
+            case '>':
+              result = intelligence > value;
+              break;
+            default:
+              break;
+          }
+        default:
           break;
       }
     }

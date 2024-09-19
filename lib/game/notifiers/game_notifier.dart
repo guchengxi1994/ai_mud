@@ -170,10 +170,24 @@ class GameNotifier extends AutoDisposeNotifier<GameState> {
     await isarDatabase.isar!.writeTxn(() async {
       logger.info("ability after: ${system.player.value!.ability}");
       await isarDatabase.isar!.players.put(system.player.value!);
+      await system.player.save();
       await isarDatabase.isar!.systems.put(system);
     });
 
     ref.read(systemProvider.notifier).moveNext();
+  }
+
+  Future savePlayerAbility(String e) async {
+    PlayerAbility ability = PlayerAbility.fromString(e);
+    System system = await ref.read(systemProvider.notifier).getCurrent();
+    system.player.value!.ability = system.player.value!.ability + ability;
+    logger.info("ability adjust: $ability");
+
+    await isarDatabase.isar!.writeTxn(() async {
+      logger.info("ability after: ${system.player.value!.ability}");
+      await isarDatabase.isar!.players.put(system.player.value!);
+      await system.player.save();
+    });
   }
 
   saveChatHistory() async {

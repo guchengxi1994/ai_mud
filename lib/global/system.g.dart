@@ -33,6 +33,9 @@ Game _$GameFromJson(Map<String, dynamic> json) => Game(
           (json['options'] as List<dynamic>).map((e) => e as String).toList(),
       roles: (json['roles'] as List<dynamic>).map((e) => e as String).toList(),
       aims: (json['aims'] as List<dynamic>).map((e) => e as String).toList(),
+      specialEvents: (json['special-events'] as List<dynamic>)
+          .map((e) => SpecialEvent.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$GameToJson(Game instance) => <String, dynamic>{
@@ -40,6 +43,7 @@ Map<String, dynamic> _$GameToJson(Game instance) => <String, dynamic>{
       'options': instance.options,
       'roles': instance.roles,
       'aims': instance.aims,
+      'special-events': instance.specialEvents,
     };
 
 GameSettings _$GameSettingsFromJson(Map<String, dynamic> json) => GameSettings(
@@ -49,14 +53,32 @@ GameSettings _$GameSettingsFromJson(Map<String, dynamic> json) => GameSettings(
       badLuckMessage: json['bad-luck-message'] as String,
       goodEnding: json['good-ending'] as String,
       badEnding: json['bad-ending'] as String,
+      specialEventProbability:
+          (json['special-event-probability'] as num).toDouble(),
     );
 
 Map<String, dynamic> _$GameSettingsToJson(GameSettings instance) =>
     <String, dynamic>{
+      'special-event-probability': instance.specialEventProbability,
       'good-luck': instance.goodLuck,
       'bad-luck': instance.badLuck,
       'good-luck-message': instance.goodLuckMessage,
       'bad-luck-message': instance.badLuckMessage,
       'good-ending': instance.goodEnding,
       'bad-ending': instance.badEnding,
+    };
+
+SpecialEvent _$SpecialEventFromJson(Map<String, dynamic> json) => SpecialEvent(
+      eventName: json['event-name'] as String,
+      conditions: json['conditions'] as String,
+      ifSatisfied: json['if-satisfied'] as String,
+      ifNotSatisfied: json['if-not-satisfied'] as String,
+    );
+
+Map<String, dynamic> _$SpecialEventToJson(SpecialEvent instance) =>
+    <String, dynamic>{
+      'event-name': instance.eventName,
+      'conditions': instance.conditions,
+      'if-satisfied': instance.ifSatisfied,
+      'if-not-satisfied': instance.ifNotSatisfied,
     };
